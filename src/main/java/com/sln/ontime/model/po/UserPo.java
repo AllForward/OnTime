@@ -17,4 +17,17 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 public class UserPo implements Serializable {
+
+    private Integer userId;
+
+    //微信名
+    private String name;
+
+    //微信头像地址
+    private String wechatIcon;
+
+    private String openId;
+
+    private String unionId;
+
 }

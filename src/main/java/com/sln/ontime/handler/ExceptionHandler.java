@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class ExceptionHandler {
 
 
-    @Around("execution(public com.gp.wechart.model.dto.ResultBean com.gp.wechart.controller..*(..))")
+    @Around("execution(public com.sln.ontime.model.dto.ResultBean com.sln.ontime.controller..*(..))")
     public Object handlerControllerMethod(ProceedingJoinPoint pjp) {
 
         ResultBean<?> result;
