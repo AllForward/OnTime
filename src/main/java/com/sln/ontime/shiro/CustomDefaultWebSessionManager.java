@@ -23,7 +23,9 @@ public class CustomDefaultWebSessionManager extends DefaultWebSessionManager {
     @Override
     protected Serializable getSessionId(ServletRequest request, ServletResponse response) {
         // 从请求头中获取token
+
         String token = WebUtils.toHttp(request).getHeader("Authorization");
+        log.info("正在从请求头中拿取Authorization字段，值为{}", token);
         if (StringUtils.isNoneBlank(token)) {
             // 设置当前session状态
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE, "url");
