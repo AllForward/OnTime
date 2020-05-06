@@ -29,7 +29,7 @@ spring:
         max-wait: -1
         min-idle: 0
 
-# \u914D\u7F6E\u6570\u636E\u5E93\u4E0B\u5212\u7EBF\u5B57\u6BB5\u6620\u5C04\u5230\u5BF9\u8C61\u5C5E\u6027\u4E3A\u9A7C\u5CF0\u5F0F
+# 开启数据库字段映射驼峰模式
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
