@@ -20,6 +20,7 @@ public class Plan {
 
     private String planName;
 
+    //大计划类型标识(非0及为groupId,0为个人计划)
     private Integer type;
 
 }

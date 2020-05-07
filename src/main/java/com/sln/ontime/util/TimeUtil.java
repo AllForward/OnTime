@@ -127,7 +127,7 @@ public class TimeUtil {
         calendarStart.set(Calendar.DATE, calendarStart.get(Calendar.DATE) + 1);
         return calendarStart.before(calendarEnd);
     }
-    
+
 
     public static List<String> getTimeList(String startTime, String endTime){
         List<String> timeList = new ArrayList<>();
