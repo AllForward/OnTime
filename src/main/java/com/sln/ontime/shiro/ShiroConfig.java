@@ -55,7 +55,7 @@ public class ShiroConfig {
 //        map.put("/api/control/**", "anon");
 //        map.put("/api/customer/user/loginByAccount","anon");
 //        map.put("/api/customer/user/loginByWechat","anon");
-        map.put("/wx/**","anon");
+        map.put("/wx/login","anon");
         map.put("/css/**","anon");
         map.put("/js/**","anon");
         map.put("/fonts/**","anon");

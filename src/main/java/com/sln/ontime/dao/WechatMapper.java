@@ -1,15 +1,19 @@
 package com.sln.ontime.dao;
 
 import com.sln.ontime.model.po.UserPo;
+import com.sln.ontime.model.vo.UserVo;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface WechatMapper {
 
+    @Select("select user_id, open_id, name, wechat_icon from user where open_id = #{openId}")
+    UserVo getUserByOpenId(String openId);
 
-    UserPo getUserByOpenId(String openId);
-
-    Integer insertUser(UserPo userPo);
+    @Insert("insert into user(open_id, name, wechat_icon) values(#{openId}, #{name}, #{wechatIcon})")
+    Integer insertUser(UserVo userVo);
 
 
 }
