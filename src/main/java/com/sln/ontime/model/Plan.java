@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @description
  * @author guopei
@@ -19,6 +21,8 @@ public class Plan {
     private Integer userId;
 
     private String planName;
+
+    private List<Task> taskList;
 
     //大计划类型标识(非0及为groupId,0为个人计划)
     private Integer type;

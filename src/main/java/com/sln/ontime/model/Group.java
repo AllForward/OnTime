@@ -20,4 +20,6 @@ public class Group {
 
     private Integer creatorId;
 
+    private Integer limit;
+
 }

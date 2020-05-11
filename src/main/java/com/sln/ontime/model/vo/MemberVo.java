@@ -1,5 +1,6 @@
 package com.sln.ontime.model.vo;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,23 +8,21 @@ import lombok.NoArgsConstructor;
 /**
  * @description
  * @author guopei
- * @date 2020-04-24 16:59
+ * @date 2020-05-08 16:41
  */
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
-public class UserVo {
+@NoArgsConstructor
+@AllArgsConstructor
+public class MemberVo {
 
-    private String userId;
+    private Integer groupId;
 
-    //微信名
+    private String memberId;
+
     private String name;
 
-    //微信头像地址
     private String wechatIcon;
 
+    private String type;
 
-    private String openId;
-
-    private String unionId;
 }

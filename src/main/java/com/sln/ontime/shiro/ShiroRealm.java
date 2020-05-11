@@ -2,6 +2,7 @@ package com.sln.ontime.shiro;
 
 import com.alibaba.druid.util.StringUtils;
 import com.sln.ontime.exception.ErrorException;
+import com.sln.ontime.model.po.UserPo;
 import com.sln.ontime.model.vo.UserVo;
 import com.sln.ontime.service.WechatService;
 import com.sln.ontime.shiro.token.WechatToken;
@@ -94,12 +95,14 @@ public class ShiroRealm extends AuthorizingRealm {
             WechatToken wechatToken = (WechatToken) token;
             log.info("进入shiro执行方法，用户通过了前端微信授权");
             try {
-                UserVo userVo = wechatService.login(wechatToken);
-                AuthenticationInfo authcInfo = new SimpleAuthenticationInfo(userVo, "ok", this.getClass().getSimpleName());
+                UserPo userPo = wechatService.login(wechatToken);
+                AuthenticationInfo authcInfo = new SimpleAuthenticationInfo(userPo, "ok", this.getClass().getSimpleName());
                 return authcInfo;
             } catch (ErrorException e) {
                 throw new AuthenticationException(e.getMessage());
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
