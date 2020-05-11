@@ -1,4 +1,4 @@
-package com.sln.ontime.model;
+package com.sln.ontime.model.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,14 +7,17 @@ import lombok.NoArgsConstructor;
 /**
  * @description
  * @author guopei
- * @date 2020-05-06 14:59
+ * @date 2020-05-06 14:57
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Member {
+public class Group {
 
     private Integer groupId;
 
-    private Integer memberId;
+    private String groupName;
+
+    private Integer creatorId;
+
 }
