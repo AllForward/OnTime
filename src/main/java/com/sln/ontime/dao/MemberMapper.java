@@ -1,6 +1,6 @@
 package com.sln.ontime.dao;
 
-import com.sln.ontime.model.Member;
+import com.sln.ontime.model.po.Member;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;

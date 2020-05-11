@@ -1,6 +1,7 @@
 package com.sln.ontime.dao;
 
-import com.sln.ontime.model.Group;
+
+import com.sln.ontime.model.po.Group;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
