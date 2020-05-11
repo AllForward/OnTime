@@ -1,4 +1,4 @@
-package com.sln.ontime.model;
+package com.sln.ontime.model.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,5 +19,7 @@ public class Group {
     private String groupName;
 
     private Integer creatorId;
+
+    private Integer limit;
 
 }

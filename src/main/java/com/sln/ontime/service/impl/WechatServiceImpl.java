@@ -7,6 +7,7 @@ import com.sln.ontime.model.po.UserPo;
 import com.sln.ontime.model.vo.UserVo;
 import com.sln.ontime.service.WechatService;
 import com.sln.ontime.shiro.token.WechatToken;
+import com.sln.ontime.util.RSAUtil;
 import com.sln.ontime.util.RestTemplateUtil;
 import com.sln.ontime.util.UrlsUtil;
 import com.sln.ontime.util.VerifyUtil;
@@ -38,17 +39,17 @@ public class WechatServiceImpl implements WechatService {
      * 登录接口
      */
     @Override
-    public UserVo login(WechatToken wechatToken) {
+    public UserPo login(WechatToken wechatToken) throws Exception {
 
         log.info("正在执行登录接口");
         if (VerifyUtil.isEmpty(wechatToken.getOpenId()) && VerifyUtil.isEmpty(wechatToken.getName())
-            && VerifyUtil.isEmpty(wechatToken.getWechatIcon())) {
+                && VerifyUtil.isEmpty(wechatToken.getWechatIcon())) {
             log.info("前端传过来的部分参数为空");
             throw new ErrorException("网络传输异常，请重试");
         }
         //判断数据库内是否已经存在该用户
-        UserVo userVo = wechatMapper.getUserByOpenId(wechatToken.getOpenId());
-        if (VerifyUtil.isNull(userVo)) {
+        UserPo userPo = wechatMapper.getUserByOpenId(wechatToken.getOpenId());
+        if (VerifyUtil.isNull(userPo)) {
             //说明还不存在该用户
             log.info("用户{}第一次登录小程序", wechatToken.getName());
             UserVo user = new UserVo();
@@ -59,10 +60,10 @@ public class WechatServiceImpl implements WechatService {
                 log.info("插入用户信息到数据库失败");
                 throw new ErrorException("系统出现异常，请稍后重试");
             }
-            userVo = wechatMapper.getUserByOpenId(user.getOpenId());
+            userPo = wechatMapper.getUserByOpenId(user.getOpenId());
         }
-        log.info("{}登录成功", userVo.getName());
-        return userVo;
+        log.info("{}登录成功", userPo.getName());
+        return userPo;
     }
 
     /**

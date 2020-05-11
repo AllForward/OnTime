@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Select;
 public interface WechatMapper {
 
     @Select("select user_id, open_id, name, wechat_icon from user where open_id = #{openId}")
-    UserVo getUserByOpenId(String openId);
+    UserPo getUserByOpenId(String openId);
 
     @Insert("insert into user(open_id, name, wechat_icon) values(#{openId}, #{name}, #{wechatIcon})")
     Integer insertUser(UserVo userVo);
