@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserVo {
 
-    private String userId;
+    private Integer userId;
 
     //微信名
     private String name;

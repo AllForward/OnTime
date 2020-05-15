@@ -17,7 +17,7 @@ public class MemberVo {
 
     private Integer groupId;
 
-    private String memberId;
+    private Integer userId;
 
     private String name;
 

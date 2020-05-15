@@ -1,11 +1,12 @@
 package com.sln.ontime.service.impl;
 
 
-import com.sln.ontime.dao.GroupMapper;
-import com.sln.ontime.dao.MemberMapper;
+import com.google.zxing.client.result.BizcardResultParser;
+import com.sln.ontime.dao.*;
 import com.sln.ontime.exception.ErrorException;
 import com.sln.ontime.model.po.Group;
 import com.sln.ontime.model.po.Member;
+import com.sln.ontime.model.po.Plan;
 import com.sln.ontime.model.po.UserPo;
 import com.sln.ontime.model.vo.GroupVo;
 import com.sln.ontime.model.vo.MemberVo;
@@ -16,6 +17,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @description
@@ -32,11 +36,20 @@ public class GroupServiceImpl implements GroupService {
     @Resource
     private GroupMapper groupMapper;
 
+    @Resource
+    private PlanMapper planMapper;
+
+    @Resource
+    private TaskMapper taskMapper;
+
+    @Resource
+    private WechatMapper wechatMapper;
+
     @Override
     public GroupVo updateMember(MemberVo memberVo, UserPo userPo) throws Exception {
 
         if (VerifyUtil.isNull(memberVo) || VerifyUtil.isEmpty(memberVo.getGroupId())
-                || VerifyUtil.isEmpty(memberVo.getMemberId())) {
+                || VerifyUtil.isEmpty(memberVo.getUserId())) {
             log.info("前端传过来的参数为空");
             throw new ErrorException("网络传输异常，请重试");
         }
@@ -47,7 +60,7 @@ public class GroupServiceImpl implements GroupService {
         Group group = groupMapper.getGroupByGroupId(memberVo.getGroupId());
         Member member = new Member();
         member.setGroupId(memberVo.getGroupId());
-        member.setMemberId(Integer.valueOf(RSAUtil.decrypt(memberVo.getMemberId())));
+        member.setMemberId(memberVo.getUserId());
         //先判断是要删除还是添加成员
         if (memberVo.getType().equals("add")) {
             //说明是添加成员
@@ -79,11 +92,79 @@ public class GroupServiceImpl implements GroupService {
         }
         //Todo 将返回的数据进行完善
         GroupVo groupVo = new GroupVo();
+        groupVo.setGroupId(memberVo.getGroupId());
+        groupVo.setGroupName(group.getGroupName());
+        List<Plan> planList = planMapper.getPlanByType(memberVo.getGroupId());
+        for (Plan plan : planList) {
+            plan.setTaskList(taskMapper.getTaskByPlanId(plan.getPlanId()));
+        }
+        groupVo.setGroupPlanList(planList);
+        List<Member> memberList = memberMapper.getMemberByGroupId(memberVo.getGroupId());
+        List<MemberVo> memberVoList = new LinkedList<>();
+        for (Member m : memberList) {
+            MemberVo mv = wechatMapper.getUserByUserId(m.getMemberId());
+            memberVoList.add(memberVo);
+        }
+        groupVo.setGroupMemberList(memberVoList);
+        groupVo.setLimit(group.getLimit());
+        return groupVo;
+    }
 
+    /**
+     * 新增团队
+     * @param group
+     * @param userPo
+     * @return
+     */
+    @Override
+    public GroupVo addGroup(Group group, UserPo userPo) {
+        if (VerifyUtil.isEmpty(group.getGroupName()) || VerifyUtil.isEmpty(group.getLimit())) {
+            log.info("前端传过来的参数不完整");
+            throw new ErrorException("请将数据填写完整");
+        }
+        group.setCreatorId(userPo.getUserId());
+        groupMapper.insertGroup(group);
+        group = groupMapper.getGroupByGroupId(group.getGroupId());
+        GroupVo groupVo = new GroupVo();
+        groupVo.setGroupName(group.getGroupName());
+        groupVo.setCreatorId(group.getCreatorId());
+        groupVo.setLimit(group.getLimit());
+        groupVo.setGroupPlanList(null);
+        List<Member> memberList = memberMapper.getMemberByGroupId(group.getGroupId());
+        List<MemberVo> memberVoList = new ArrayList<>();
+        for (Member member :
+                memberList) {
+            MemberVo memberVo = wechatMapper.getUserByUserId(member.getMemberId());
+            memberVoList.add(memberVo);
+        }
+        groupVo.setGroupMemberList(memberVoList);
+        return groupVo;
+    }
 
-
-
-
-        return null;
+    /**
+     * 删除团队
+     * @param groupId
+     * @param userPo
+     * @return
+     */
+    @Override
+    public String deleteGroup(Integer groupId, UserPo userPo) {
+        //判断该团队是否存在
+        Group group = groupMapper.getGroupByGroupId(groupId);
+        if (group != null) {
+            //判断该成员是否为创建者
+            if (group.getCreatorId().equals(userPo.getUserId())) {
+                groupMapper.deleteGroupByGroupId(groupId);
+                return "success";
+            }
+            else {
+                log.info("用户{}无权限删除id为{}的团队", userPo.getName(), groupId);
+                throw new ErrorException("您不是该团队创建者,无权限删除该团队");
+            }
+        }
+        else {
+            log.info("团队id为{}不存在", groupId);
+            throw new ErrorException("该团队不存在");
+        }
     }
 }
