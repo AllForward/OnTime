@@ -20,4 +20,6 @@ public class SortVo {
     //日期
     private String date;
 
+    private Integer userId;
+
 }
