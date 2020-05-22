@@ -56,9 +56,9 @@ public class PersonalPlanServiceImplTest {
         planVo.setUserId(1);
         planVo.setPlanName("测试个人计划");
         List<Task> tasks = new ArrayList<>();
-        Task task1 = new Task(null,null,"测试子任务1",30,
+        Task task1 = new Task(null,null,1, "测试子任务1",30,
                 "2020-05-10 20:21:00","2020-05-11 20:21:00",3,0);
-        Task task2 = new Task(null,null,"测试子任务2",40,
+        Task task2 = new Task(null,null, 1, "测试子任务2",40,
                 "2020-05-10 16:21:00","2020-05-11 20:21:00",3,0);
         tasks.add(task1);
         tasks.add(task2);

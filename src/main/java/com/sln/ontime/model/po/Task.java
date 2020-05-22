@@ -18,6 +18,8 @@ public class Task {
 
     private Integer planId;
 
+    private Integer userId;
+
     private String taskName;
 
     //任务耗时(以分钟为单位)

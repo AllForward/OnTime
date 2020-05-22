@@ -58,7 +58,7 @@ public class WechatController {
         UserPo userPo = (UserPo) subject.getPrincipal();
         response.setHeader("Authorization", subject.getSession().getId().toString());
         UserVo userVo = new UserVo();
-        userVo.setUserId(RSAUtil.encrypt(String.valueOf(userPo.getUserId())));
+        userVo.setUserId(userPo.getUserId());
         userVo.setWechatIcon(userPo.getWechatIcon());
         userVo.setName(userPo.getName());
         return new ResultBean<>(userVo);

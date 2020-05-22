@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 @Mapper
 public interface MemberMapper {
 
@@ -15,6 +17,9 @@ public interface MemberMapper {
 
     @Select("select count(member_id) from member where group_id = #{groupId}")
     Integer getGroupMemberNum(Integer groupId);
+
+    @Select("select group_id, member_id from member where group_id = #{groupId}")
+    List<Member> getMemberByGroupId(Integer groupId);
 
     @Delete("delete from member where member_id = #{memberId} and group_id = #{groupId}")
     Integer deleteGroupMember(Member member);

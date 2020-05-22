@@ -3,6 +3,8 @@ package com.sln.ontime.dao;
 import com.sln.ontime.model.po.Plan;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 /**
  * @author Red Date.
  * @date 2020/5/8 23:41
@@ -22,5 +24,8 @@ public interface PlanMapper {
 
     @Select("select plan_id,user_id,plan_name,type from plan where plan_id = #{planId}")
     Plan getPlanByPlanId(Integer planId);
+
+    @Select("select plan_id,user_id,plan_name,type from plan where type = #{type}")
+    List<Plan> getPlanByType(Integer type);
 
 }
