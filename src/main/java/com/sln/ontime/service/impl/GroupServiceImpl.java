@@ -49,7 +49,7 @@ public class GroupServiceImpl implements GroupService {
     public GroupVo updateMember(MemberVo memberVo, UserPo userPo) throws Exception {
 
         if (VerifyUtil.isNull(memberVo) || VerifyUtil.isEmpty(memberVo.getGroupId())
-                || VerifyUtil.isEmpty(memberVo.getUserId())) {
+                || VerifyUtil.isEmpty(memberVo.getUserId()) || VerifyUtil.isEmpty(memberVo.getType())) {
             log.info("前端传过来的参数为空");
             throw new ErrorException("网络传输异常，请重试");
         }
@@ -100,10 +100,10 @@ public class GroupServiceImpl implements GroupService {
         }
         groupVo.setGroupPlanList(planList);
         List<Member> memberList = memberMapper.getMemberByGroupId(memberVo.getGroupId());
-        List<MemberVo> memberVoList = new LinkedList<>();
+        List<UserPo> memberVoList = new LinkedList<>();
         for (Member m : memberList) {
-            MemberVo mv = wechatMapper.getUserByUserId(m.getMemberId());
-            memberVoList.add(memberVo);
+            UserPo user = wechatMapper.getUserByUserId(m.getMemberId());
+            memberVoList.add(user);
         }
         groupVo.setGroupMemberList(memberVoList);
         groupVo.setLimit(group.getLimit());
@@ -124,18 +124,21 @@ public class GroupServiceImpl implements GroupService {
         }
         group.setCreatorId(userPo.getUserId());
         groupMapper.insertGroup(group);
+        //将创建者本人加入到该团队中
+        memberMapper.insertMember(new Member(group.getGroupId(), userPo.getUserId()));
         group = groupMapper.getGroupByGroupId(group.getGroupId());
         GroupVo groupVo = new GroupVo();
+        groupVo.setGroupId(group.getGroupId());
         groupVo.setGroupName(group.getGroupName());
         groupVo.setCreatorId(group.getCreatorId());
         groupVo.setLimit(group.getLimit());
         groupVo.setGroupPlanList(null);
         List<Member> memberList = memberMapper.getMemberByGroupId(group.getGroupId());
-        List<MemberVo> memberVoList = new ArrayList<>();
+        List<UserPo> memberVoList = new ArrayList<>();
         for (Member member :
                 memberList) {
-            MemberVo memberVo = wechatMapper.getUserByUserId(member.getMemberId());
-            memberVoList.add(memberVo);
+            UserPo user = wechatMapper.getUserByUserId(member.getMemberId());
+            memberVoList.add(user);
         }
         groupVo.setGroupMemberList(memberVoList);
         return groupVo;

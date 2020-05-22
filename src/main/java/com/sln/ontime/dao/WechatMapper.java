@@ -17,7 +17,7 @@ public interface WechatMapper {
     Integer insertUser(UserVo userVo);
 
     @Select("select user_id, name, wechat_icon from user where user_id = #{userId}")
-    MemberVo getUserByUserId(Integer userId);
+    UserPo getUserByUserId(Integer userId);
 
 
 }
