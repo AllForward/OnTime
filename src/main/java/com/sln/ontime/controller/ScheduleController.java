@@ -8,6 +8,7 @@ import com.sln.ontime.service.TaskService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +28,7 @@ public class ScheduleController {
     @Resource
     private TaskService taskService;
 
-
+    @PostMapping("/sortTask")
     public ResultBean<?> sortTask(@RequestBody SortVo sortVo) {
         log.info("执行子任务排序方法");
         Subject subject = SecurityUtils.getSubject();
@@ -35,7 +36,7 @@ public class ScheduleController {
         return new ResultBean<>(taskService.getSortTasks(sortVo, userPo));
     }
 
-    @RequestMapping("/updateTaskStatus")
+    @PostMapping("/updateTaskStatus")
     public ResultBean<?> updateTaskStatus(@RequestBody Task task) {
         log.info("执行修改子任务状态方法");
         return new ResultBean<>(taskService.updateTaskStatus(task));
