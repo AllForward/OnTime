@@ -1,13 +1,14 @@
 package com.sln.ontime.model.vo;
 
 
-import com.sln.ontime.model.Member;
-import com.sln.ontime.model.Plan;
+import com.sln.ontime.model.po.Member;
+import com.sln.ontime.model.po.Plan;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+
 
 /**
  * @description
