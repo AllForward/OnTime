@@ -2,6 +2,7 @@ package com.sln.ontime.controller;
 
 
 import com.sln.ontime.model.dto.ResultBean;
+import com.sln.ontime.model.po.Group;
 import com.sln.ontime.model.po.UserPo;
 import com.sln.ontime.model.vo.MemberVo;
 import com.sln.ontime.model.vo.UserVo;
@@ -11,10 +12,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @description
@@ -40,6 +38,20 @@ public class GroupController {
         Subject subject = SecurityUtils.getSubject();
         UserPo userPo = (UserPo) subject.getPrincipal();
         return new ResultBean<>(groupService.updateMember(memberVo, userPo));
+    }
+
+    @PostMapping("/addGroup")
+    public ResultBean<?> addGroup(@RequestBody Group group) {
+        Subject subject = SecurityUtils.getSubject();
+        UserPo userPo = (UserPo) subject.getPrincipal();
+        return new ResultBean<>(groupService.addGroup(group, userPo));
+    }
+
+    @GetMapping("/deleteGroup")
+    public ResultBean<?> deleteGroup(@RequestParam("groupId") Integer groupId) {
+        Subject subject = SecurityUtils.getSubject();
+        UserPo userPo = (UserPo) subject.getPrincipal();
+        return new ResultBean<>(groupService.deleteGroup(groupId, userPo));
     }
 
 }

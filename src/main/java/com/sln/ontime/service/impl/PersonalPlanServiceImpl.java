@@ -5,6 +5,7 @@ import com.sln.ontime.dao.TaskMapper;
 import com.sln.ontime.exception.ErrorException;
 import com.sln.ontime.model.po.Plan;
 import com.sln.ontime.model.po.Task;
+import com.sln.ontime.model.po.UserPo;
 import com.sln.ontime.model.vo.PlanVo;
 import com.sln.ontime.service.PersonalPlanService;
 import com.sln.ontime.util.VerifyUtil;
@@ -70,6 +71,7 @@ public class PersonalPlanServiceImpl implements PersonalPlanService {
         List<Task> result = new ArrayList<>();
         for (Task task : taskList){
             task.setPlanId(plan.getPlanId());
+            task.setUserId(personalPlanVo.getUserId());
             if(taskMapper.insertTask(task)!=1){
                 log.info("子任务插入数据库失败");
                 throw new ErrorException("系统出现异常，请稍后重试");
