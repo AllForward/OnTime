@@ -29,7 +29,7 @@ public interface TaskMapper {
     @Update("update task set status = #{status} where task_id = #{taskId}")
     Integer updateTaskStatus(Task task);
 
-    @Select("select task_id,plan_id,task_name,lasting,start_time,end_time,priority,status from task where plan_id = #{planId}")
+    @Select("select task_id,plan_id,user_id,task_name,lasting,start_time,end_time,priority,status from task where plan_id = #{planId}")
     List<Task> getTaskByPlanId(Integer planId);
 
     @Select("select task_id, task_name, lasting, start_time, end_time, priority, status from task where user_id = #{userId}" +

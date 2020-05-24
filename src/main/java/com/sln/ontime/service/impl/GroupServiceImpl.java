@@ -4,16 +4,15 @@ package com.sln.ontime.service.impl;
 import com.google.zxing.client.result.BizcardResultParser;
 import com.sln.ontime.dao.*;
 import com.sln.ontime.exception.ErrorException;
-import com.sln.ontime.model.po.Group;
-import com.sln.ontime.model.po.Member;
-import com.sln.ontime.model.po.Plan;
-import com.sln.ontime.model.po.UserPo;
+import com.sln.ontime.model.po.*;
 import com.sln.ontime.model.vo.GroupVo;
 import com.sln.ontime.model.vo.MemberVo;
+import com.sln.ontime.model.vo.PlanVo;
 import com.sln.ontime.service.GroupService;
 import com.sln.ontime.util.RSAUtil;
 import com.sln.ontime.util.VerifyUtil;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -169,5 +168,37 @@ public class GroupServiceImpl implements GroupService {
             log.info("团队id为{}不存在", groupId);
             throw new ErrorException("该团队不存在");
         }
+    }
+
+    @Override
+    public List<Plan> getGroupPlan(Integer groupId, UserPo userPo) {
+        if (VerifyUtil.isEmpty(groupId)) {
+            log.info("团队id为空");
+            throw new ErrorException("请选择要查询的团队");
+        }
+        //查看该团队是否存在
+        if (VerifyUtil.isNull(groupMapper.getGroupByGroupId(groupId))) {
+            log.info("id为{}的团队不存在", groupId);
+            throw new ErrorException("该团队不存在");
+        }
+        //判断该成员是否在该团队中
+        List<Member> memberList = memberMapper.getMemberByGroupId(groupId);
+        for (Member member : memberList) {
+            //说明该成员在团队中
+            if (member.getMemberId().equals(userPo.getUserId())) {
+                List<Plan> planList = planMapper.getPlanByType(groupId);
+                if (VerifyUtil.isEmpty(planList)) {
+                    log.info("暂无团队计划");
+                    return null;
+                }
+                for (Plan plan : planList) {
+                    List<Task> taskList = taskMapper.getTaskByPlanId(plan.getPlanId());
+                    plan.setTaskList(taskList);
+                }
+                return planList;
+            }
+        }
+        log.info("id为{}的用户不属于id为{}的团队", userPo.getUserId(), groupId);
+        throw new ErrorException("您还不是该团队的成员，无权访问");
     }
 }
