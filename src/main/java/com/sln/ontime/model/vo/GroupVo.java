@@ -1,7 +1,6 @@
 package com.sln.ontime.model.vo;
 
 
-import com.sln.ontime.model.po.Member;
 import com.sln.ontime.model.po.Plan;
 import com.sln.ontime.model.po.UserPo;
 import lombok.AllArgsConstructor;
@@ -9,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+
 
 /**
  * @description

@@ -3,7 +3,6 @@ package com.sln.ontime.service.impl;
 import com.sln.ontime.model.po.Task;
 import com.sln.ontime.model.vo.PlanVo;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,9 +40,7 @@ public class PersonalPlanServiceImplTest {
     */ 
     @Test
     public void testGetPersonalPlan() throws Exception {
-        PlanVo planVo =personalPlanService.getPersonalPlan(10000);
-        Assert.assertNull(planVo);
-        PlanVo planVo1 = personalPlanService.getPersonalPlan(2);
+        PlanVo planVo1 = personalPlanService.getPersonalPlan(5);
         System.out.println(planVo1);
     } 
 
