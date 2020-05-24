@@ -1,11 +1,8 @@
 package com.sln.ontime.dao;
 
 import com.sln.ontime.model.po.UserPo;
-import com.sln.ontime.model.vo.MemberVo;
 import com.sln.ontime.model.vo.UserVo;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface WechatMapper {
@@ -20,4 +17,6 @@ public interface WechatMapper {
     UserPo getUserByUserId(Integer userId);
 
 
+    @Update("update user set name = #{nickname} where user_id = #{userId}")
+    Integer updateNickname(@Param("nickname")String nickname,@Param("userId")Integer userId);
 }
