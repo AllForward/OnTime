@@ -13,4 +13,6 @@ public interface TaskService {
 
     List<Task> getSortTasks(SortVo sortVo, UserPo userPo);
 
+    boolean deleteTask(Integer taskId, UserPo userPo);
+
 }

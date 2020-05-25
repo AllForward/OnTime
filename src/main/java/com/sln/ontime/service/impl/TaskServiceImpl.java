@@ -63,4 +63,26 @@ public class TaskServiceImpl implements TaskService {
         //Todo 进行排序
         return taskList;
     }
+
+    @Override
+    public boolean deleteTask(Integer taskId, UserPo userPo) {
+        if (VerifyUtil.isEmpty(taskId)) {
+            log.info("前端的taskId参数为空");
+            throw new ErrorException("请选择要删除的子任务");
+        }
+        Task task = taskMapper.getTaskByTaskId(taskId);
+        if (VerifyUtil.isNull(task)) {
+            log.info("id为{}的子任务不存在", taskId);
+            throw new ErrorException("该子计划不存在");
+        }
+        if (task.getUserId().equals(userPo.getUserId())) {
+            //说明该计划是用户创建的
+            taskMapper.deleteTaskByTaskId(taskId);
+            return true;
+        }
+        else {
+            log.info("id为{}的子任务不是用户{}所创建的", taskId, userPo.getUserId());
+            throw new ErrorException("该子任务不是您创建的，您无权限删除");
+        }
+    }
 }

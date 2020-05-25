@@ -5,6 +5,7 @@ import com.sln.ontime.model.po.Plan;
 import com.sln.ontime.model.po.UserPo;
 import com.sln.ontime.model.vo.GroupVo;
 import com.sln.ontime.model.vo.MemberVo;
+import com.sln.ontime.model.vo.PlanVo;
 
 import java.util.List;
 
@@ -17,6 +18,10 @@ public interface GroupService {
     String deleteGroup(Integer groupId, UserPo userPo);
 
     List<Plan> getGroupPlan(Integer groupId, UserPo userPo);
+
+    PlanVo addGroupPlan(PlanVo planVo);
+
+    boolean deleteGroupPlan(Integer planId, UserPo userPo);
 
 
 }
