@@ -15,7 +15,7 @@ import java.util.List;
  * @Date 2020/5/15 10:07
  * @Version 1.0
  */
-public class TaskListService {
+class TaskListService {
 
     /**
      * 获取当前任务列表中子任务最早开始时间(String)
