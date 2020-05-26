@@ -19,23 +19,23 @@ public class TaskListService {
 
     /**
      * 获取当前任务列表中子任务最早开始时间(String)
-     * @return String
+     * @return firstStartTime
      */
     private String getFirstStartTime(List<Task> newTaskList){
         String firstStartTime = newTaskList.get(0).getStartTime();
-        long fst = Long.parseLong(firstStartTime.replaceAll("[^0-9]",""));
+        long fst = 0;
         for( int i = 0; i < newTaskList.size(); i++ ){
+            fst = Long.valueOf( firstStartTime.replaceAll("[^0-9]","") );
             if( fst > Long.valueOf(newTaskList.get(i).getStartTime().replaceAll("[^0-9]","")) ) {
                 firstStartTime = newTaskList.get(i).getStartTime();
             }
-
         }
         return firstStartTime;
     }
 
     /**
      * 计算每个任务的起始时间
-     * @return String
+     * @return startTime
      */
     private String startTimeUtil(String firstStartTime, int totalLasting){
         //24时格式
@@ -69,6 +69,7 @@ public class TaskListService {
             }
             startTime = startTimeUtil(firstStartTime, totalLasting);
             newTaskList.get(i).setStartTime(startTime);
+            totalLasting = 0;
         }
         return newTaskList;
     }
