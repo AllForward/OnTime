@@ -61,10 +61,8 @@ public class TaskServiceImpl implements TaskService {
             log.info("用户暂无子任务");
             return null;
         }
-        //Todo 进行排序
         StartSortService startSortService = new StartSortService();
-        taskList = startSortService.startSort(taskList, 1);
-        return taskList;
+        return startSortService.startSort(taskList, sortVo.getAlgorithm());
     }
 
     @Override
