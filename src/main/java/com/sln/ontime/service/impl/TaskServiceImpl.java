@@ -6,6 +6,7 @@ import com.sln.ontime.model.po.Task;
 import com.sln.ontime.model.po.UserPo;
 import com.sln.ontime.model.vo.SortVo;
 import com.sln.ontime.service.TaskService;
+import com.sln.ontime.service.taskSorting.StartSortService;
 import com.sln.ontime.util.VerifyUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -61,6 +62,8 @@ public class TaskServiceImpl implements TaskService {
             return null;
         }
         //Todo 进行排序
+        StartSortService startSortService = new StartSortService();
+        taskList = startSortService.startSort(taskList, 1);
         return taskList;
     }
 

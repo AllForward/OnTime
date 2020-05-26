@@ -14,7 +14,7 @@ import java.util.*;
 public class TaskSortService {
 
     /**
-     * 短作业优
+     * 短作业优先
      */
     public static class ShortFirst implements Comparator<Task>{
 
