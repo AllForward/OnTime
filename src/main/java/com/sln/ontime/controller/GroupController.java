@@ -57,6 +57,13 @@ public class GroupController {
         return new ResultBean<>(groupService.deleteGroup(groupId, userPo));
     }
 
+    @GetMapping("/getGroup")
+    public ResultBean<?> getGroup() {
+        Subject subject = SecurityUtils.getSubject();
+        UserPo userPo = (UserPo) subject.getPrincipal();
+        return new ResultBean<>(groupService.getGroupList(userPo.getUserId()));
+    }
+
     /**
      * 获取团队的所有计划
      * @param groupId
@@ -81,10 +88,18 @@ public class GroupController {
         return new ResultBean<>(groupService.addGroupPlan(planVo));
     }
 
+    @PostMapping("/updateGroupPlan")
+    public ResultBean<?> updateGroupPlan(@RequestBody PlanVo planVo) {
+        Subject subject = SecurityUtils.getSubject();
+        UserPo userPo = (UserPo) subject.getPrincipal();
+        planVo.setUserId(userPo.getUserId());
+        return new ResultBean<>(groupService.updateGroupPlan(planVo));
+    }
+
     /**
      * 删除某个团队大计划
      */
-    @PostMapping("/deleteGroupPlan")
+    @GetMapping("/deleteGroupPlan")
     public ResultBean<?> deleteGroupPlan(@RequestParam("planId") Integer planId) {
         Subject subject = SecurityUtils.getSubject();
         UserPo userPo = (UserPo) subject.getPrincipal();
@@ -94,7 +109,7 @@ public class GroupController {
     /**
      * 删除团队大计划中的某个子计划
      */
-    @PostMapping("/deleteGroupTask")
+    @GetMapping("/deleteGroupTask")
     public ResultBean<?> deleteGroupTask(@RequestParam("taskId") Integer taskId) {
         Subject subject = SecurityUtils.getSubject();
         UserPo userPo = (UserPo) subject.getPrincipal();

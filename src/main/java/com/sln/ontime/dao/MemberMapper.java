@@ -23,4 +23,7 @@ public interface MemberMapper {
 
     @Delete("delete from member where member_id = #{memberId} and group_id = #{groupId}")
     Integer deleteGroupMember(Member member);
+
+    @Select("select group_id from member where member_id = #{userId}")
+    List<Member> getGroupsByMemberId(Integer userId);
 }

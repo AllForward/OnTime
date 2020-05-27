@@ -17,9 +17,13 @@ public interface GroupService {
 
     String deleteGroup(Integer groupId, UserPo userPo);
 
+    List<GroupVo> getGroupList(Integer userId);
+
     List<Plan> getGroupPlan(Integer groupId, UserPo userPo);
 
     PlanVo addGroupPlan(PlanVo planVo);
+
+    PlanVo updateGroupPlan(PlanVo planVo);
 
     boolean deleteGroupPlan(Integer planId, UserPo userPo);
 

@@ -170,6 +170,33 @@ public class GroupServiceImpl implements GroupService {
         }
     }
 
+    /**
+     * 获取用户所在的团队列表
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<GroupVo> getGroupList(Integer userId) {
+        List<Member> memberList = memberMapper.getGroupsByMemberId(userId);
+        if (VerifyUtil.isEmpty(memberList)) {
+            log.info("该用户暂未加入任务团队");
+            return null;
+        }
+        List<GroupVo> groupVoList = new ArrayList<>();
+        for (Member member : memberList) {
+            GroupVo groupVo = new GroupVo();
+            BeanUtils.copyProperties(groupMapper.getGroupByGroupId(member.getGroupId()) ,groupVo);
+            List<UserPo> groupMemberList = new ArrayList<>();
+            for (Member m : memberMapper.getMemberByGroupId(member.getGroupId())) {
+                UserPo user = wechatMapper.getUserByUserId(m.getMemberId());
+                groupMemberList.add(user);
+            }
+            groupVo.setGroupMemberList(groupMemberList);
+            groupVoList.add(groupVo);
+        }
+        return groupVoList;
+    }
+
     @Override
     public List<Plan> getGroupPlan(Integer groupId, UserPo userPo) {
         if (VerifyUtil.isEmpty(groupId)) {
@@ -214,61 +241,66 @@ public class GroupServiceImpl implements GroupService {
             log.info("前端传过来的参数为空");
             throw new ErrorException("请填写要添加的计划");
         }
-
         //校验该成员是否在团队中
-        if (!groupPermission(planVo.getType(), planVo.getUserId())) {
-            log.info("用户{}不属于该团队", planVo.getUserId());
-            throw new ErrorException("您还不是该团队的成员，无权访问");
+        groupPermission(planVo.getType(), planVo.getUserId());
+        //说明是新的大计划(需要先插入)
+        log.info("即将插入一条新的大计划");
+        Plan plan = new Plan();
+        plan.setType(planVo.getType());
+        BeanUtils.copyProperties(planVo, plan);
+        if(planMapper.insertPlan(plan) != 1){
+            log.info("个人计划插入数据库失败,可能部分字段为空");
+            throw new ErrorException("系统出现异常，请稍后重试");
         }
-        //判断下是否planVo是否存在
-        if (VerifyUtil.isEmpty(planVo.getPlanId())) {
-            //说明是新的大计划(需要先插入)
-            log.info("即将插入一条新的大计划");
-            Plan plan = new Plan();
-            plan.setType(planVo.getType());
-            BeanUtils.copyProperties(planVo, plan);
-            if(planMapper.insertPlan(plan) != 1){
-                log.info("个人计划插入数据库失败,可能部分字段为空");
-                throw new ErrorException("系统出现异常，请稍后重试");
-            }
-            List<Task> taskList = planVo.getTaskList();
-            if (!VerifyUtil.isEmpty(taskList)) {
-                List<Task> result = new ArrayList<>();
-                for (Task task : taskList){
-                    task.setPlanId(plan.getPlanId());
-                    task.setUserId(planVo.getUserId());
-                    if(taskMapper.insertTask(task) != 1){
-                        log.info("子任务插入数据库失败");
-                        throw new ErrorException("系统出现异常，请稍后重试");
-                    }
-                    result.add(task);
+        List<Task> taskList = planVo.getTaskList();
+        if (!VerifyUtil.isEmpty(taskList)) {
+            List<Task> result = new ArrayList<>();
+            for (Task task : taskList){
+                task.setPlanId(plan.getPlanId());
+                task.setUserId(planVo.getUserId());
+                if(taskMapper.insertTask(task) != 1){
+                    log.info("子任务插入数据库失败");
+                    throw new ErrorException("系统出现异常，请稍后重试");
                 }
-                planVo.setPlanId(plan.getPlanId());
-                planVo.setTaskList(result);
+                result.add(task);
             }
-            return planVo;
+            planVo.setPlanId(plan.getPlanId());
+            planVo.setTaskList(result);
+        }
+        return planVo;
+
+    }
+
+    @Override
+    public PlanVo updateGroupPlan(PlanVo planVo) {
+        //先对数据进行校验
+        if (VerifyUtil.isNull(planVo) || VerifyUtil.isEmpty(planVo.getPlanName()) || VerifyUtil.isEmpty(planVo.getType()
+        ) || VerifyUtil.isEmpty(planVo.getPlanId())) {
+            log.info("前端传过来的参数为空");
+            throw new ErrorException("请填写要添加的计划");
+        }
+        groupPermission(planVo.getType(), planVo.getUserId());
+        //可能是修改团队大计划
+        log.info("即将对id为{}的大计划名称进行修改", planVo.getPlanId());
+        planMapper.updatePlanByPlanId(planVo.getPlanName(), planVo.getPlanId());
+        List<Task> taskList = planVo.getTaskList();
+        if (!VerifyUtil.isEmpty(taskList)) {
+            List<Task> result = new ArrayList<>();
+            for (Task task : taskList) {
+                task.setPlanId(planVo.getPlanId());
+                task.setUserId(planVo.getUserId());
+                if (taskMapper.updateTask(task) != 1) {
+                    log.info("子任务更新数据库失败");
+                    throw new ErrorException("系统出现异常，请稍后重试");
+                }
+                result.add(task);
+            }
+            planVo.setTaskList(result);
         }
         else {
-            //可能是修改团队大计划
-            log.info("即将对id为{}的大计划名称进行修改", planVo.getPlanId());
-            planMapper.updatePlanByPlanId(planVo.getPlanName(), planVo.getPlanId());
-            List<Task> taskList = planVo.getTaskList();
-            if (!VerifyUtil.isEmpty(taskList)) {
-                List<Task> result = new ArrayList<>();
-                for (Task task : taskList) {
-                    task.setPlanId(planVo.getPlanId());
-                    task.setUserId(planVo.getUserId());
-                    if (taskMapper.insertTask(task) != 1) {
-                        log.info("子任务插入数据库失败");
-                        throw new ErrorException("系统出现异常，请稍后重试");
-                    }
-                    result.add(task);
-                }
-                planVo.setPlanId(planVo.getPlanId());
-                planVo.setTaskList(result);
-            }
-            return planVo;
+            planVo.setTaskList(taskMapper.getTaskByPlanId(planVo.getPlanId()));
         }
+        return planVo;
     }
 
     @Override
@@ -282,8 +314,9 @@ public class GroupServiceImpl implements GroupService {
             log.info("id为{}的大计划不存在", planId);
             throw new ErrorException("该团队计划不存在");
         }
-        if (plan.getUserId().equals(userPo.getUserId())) {
-            //说明该计划是用户创建的
+        if (plan.getUserId().equals(userPo.getUserId())
+                || userPo.getUserId().equals(groupMapper.getGroupByGroupId(plan.getType()).getCreatorId())) {
+            //说明该计划是用户创建的或者是团队创建者
             planMapper.deletePlanByPlanId(planId);
             return true;
         }
@@ -309,6 +342,6 @@ public class GroupServiceImpl implements GroupService {
                 return true;
             }
         }
-        return false;
+        throw new ErrorException("您不是该团队的成员，无权访问");
     }
 }
