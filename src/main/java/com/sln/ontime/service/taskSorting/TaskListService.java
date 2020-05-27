@@ -23,7 +23,7 @@ class TaskListService {
      */
     private String getFirstStartTime(List<Task> newTaskList){
         String firstStartTime = newTaskList.get(0).getStartTime();
-        long fst = 0;
+        long fst;
         for( int i = 0; i < newTaskList.size(); i++ ){
             fst = Long.valueOf( firstStartTime.replaceAll("[^0-9]","") );
             if( fst > Long.valueOf(newTaskList.get(i).getStartTime().replaceAll("[^0-9]","")) ) {
@@ -48,21 +48,21 @@ class TaskListService {
             cal.add(Calendar.MINUTE, totalLasting);
             startTime = cal.getTime();
         } catch (ParseException e) {
-            System.out.println("类：TaskListService->方法：generateTaskList()中->日期格式转换出错。");
+            System.out.println("类：TaskListService->方法：updateTaskList()中->日期格式转换出错。");
         }
         return format.format(startTime);
     }
 
     /**
      * 返回排序后的列表
-     * @return ArrayList
+     * @return newTaskList
      */
-    List<Task> generateTaskList(List<Task> newTaskList){
+    List<Task> updateTaskList(List<Task> newTaskList){
         int mark = 0;
         int markj = 0;
         int size = newTaskList.size();
-        String startTime = "";
-        String endTime = "";
+        String startTime;
+        String endTime;
         String firstStartTime = getFirstStartTime(newTaskList);
         
         /*为排序好的列表中task对象startTime重新赋值*/

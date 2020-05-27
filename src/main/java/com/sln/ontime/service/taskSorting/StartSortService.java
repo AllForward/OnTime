@@ -2,6 +2,7 @@ package com.sln.ontime.service.taskSorting;
 
 import com.sln.ontime.model.po.Task;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,22 +21,35 @@ public class StartSortService {
     public List<Task> startSort(List<Task> taskList, int type) {
         //获取到待排序任务列表及算法类型，并排序
         sortTaskList(taskList, type);
-        TaskListService taskListService = new TaskListService();
-        //设置排序后的任务列表中各任务要传给前端的startTime
-        List<Task> newTaskList = taskListService.generateTaskList(taskList);
-        //打印排序后的任务列表
+        List<Task> newTaskList;
+        if(type != 4){
+            TaskListService taskListService = new TaskListService();
+            //设置排序后的任务列表中各任务要传给前端的startTime
+            newTaskList = taskListService.updateTaskList(taskList);
+        }else {
+            newTaskList = new ArrayList<>(taskList);
+        }
+        //返回排序后的任务列表
         return newTaskList;
     }
     /**
      * 获取到待排序任务列表并根据所选算法类型排序
      */
-    private void sortTaskList(List<Task> task_list, int type) {
-        if(type == 1)
-            Collections.sort(task_list, new TaskSortService.ShortFirst());
-        else if(type == 2)
-            Collections.sort(task_list, new TaskSortService.LongFirst());
-        else
-            Collections.sort(task_list, new TaskSortService.Priority());
+    private void sortTaskList(List<Task> taskList, int type) {
+        switch(type) {
+            case 1:
+                Collections.sort(taskList, new TaskSortService.ShortFirst());
+                break;
+            case 2:
+                Collections.sort(taskList, new TaskSortService.LongFirst());
+                break;
+            case 3:
+                Collections.sort(taskList, new TaskSortService.Priority());
+                break;
+            case 4:
+                Collections.sort(taskList, new TaskSortService.UserDefine());
+                break;
+        }
     }
 
 }
