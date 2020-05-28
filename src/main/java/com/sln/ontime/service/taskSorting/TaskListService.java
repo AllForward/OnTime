@@ -23,7 +23,7 @@ class TaskListService {
      */
     private String getFirstStartTime(List<Task> newTaskList){
         String firstStartTime = newTaskList.get(0).getStartTime();
-        long fst = 0;
+        long fst;
         for( int i = 0; i < newTaskList.size(); i++ ){
             fst = Long.valueOf( firstStartTime.replaceAll("[^0-9]","") );
             if( fst > Long.valueOf(newTaskList.get(i).getStartTime().replaceAll("[^0-9]","")) ) {
@@ -48,28 +48,53 @@ class TaskListService {
             cal.add(Calendar.MINUTE, totalLasting);
             startTime = cal.getTime();
         } catch (ParseException e) {
-            System.out.println("类：TaskListService->方法：generateTaskList()中->日期格式转换出错。");
+            System.out.println("类：TaskListService->方法：updateTaskList()中->日期格式转换出错。");
         }
         return format.format(startTime);
     }
 
     /**
      * 返回排序后的列表
-     * @return ArrayList
+     * @return newTaskList
      */
-    List<Task> generateTaskList(List<Task> newTaskList){
-
-        /*为排序好的列表中task对象startTime重新赋值*/
+    List<Task> updateTaskList(List<Task> newTaskList){
+        int mark = 0;
+        int markj = 0;
+        int size = newTaskList.size();
+        String startTime;
+        String endTime;
         String firstStartTime = getFirstStartTime(newTaskList);
-        String startTime = "";
-        int totalLasting = 0;
-        for( int i = 0; i < newTaskList.size(); i++ ){
-            for( int j = 0; j < i; j++ ){
-                totalLasting += newTaskList.get(j).getLasting();
+        
+        /*为排序好的列表中task对象startTime重新赋值*/
+        /*上午的任务从任务列表最早开始时间开始，不超过12：30结束*/
+        for( int i = 0; i < size; i++ ){
+            if( i == 0 )
+                startTime = firstStartTime;
+            else
+                //每个任务之间休息10分钟
+                startTime = startTimeUtil(newTaskList.get(i - 1).getEndTime(),10);
+
+            endTime = startTimeUtil(startTime, newTaskList.get(i).getLasting());
+            long endTimel = Long.parseLong(endTime.substring(11).replaceAll("[^0-9]",""));
+            if(endTimel > 123000){
+                mark = i;
+                markj = i;
+                break;
+            }else{
+                newTaskList.get(i).setStartTime(startTime);
+                newTaskList.get(i).setEndTime(endTime);
             }
-            startTime = startTimeUtil(firstStartTime, totalLasting);
-            newTaskList.get(i).setStartTime(startTime);
-            totalLasting = 0;
+        }
+        /*下午的任务从14：00开始*/
+        for( ; mark < size; mark++){
+            if(mark == markj)
+                startTime = firstStartTime.substring(0,11) + "14:00:00";
+            else
+                startTime = startTimeUtil(newTaskList.get(mark - 1).getEndTime(), 10);
+
+            endTime = startTimeUtil(startTime, newTaskList.get(mark).getLasting());
+            newTaskList.get(mark).setStartTime(startTime);
+            newTaskList.get(mark).setEndTime(endTime);
         }
         return newTaskList;
     }
