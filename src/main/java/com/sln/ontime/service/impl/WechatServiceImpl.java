@@ -42,8 +42,8 @@ public class WechatServiceImpl implements WechatService {
     public UserPo login(WechatToken wechatToken) throws Exception {
 
         log.info("正在执行登录接口");
-        if (VerifyUtil.isEmpty(wechatToken.getOpenId()) && VerifyUtil.isEmpty(wechatToken.getName())
-                && VerifyUtil.isEmpty(wechatToken.getWechatIcon())) {
+        //Todo 正式上线需要传头像和昵称
+        if (VerifyUtil.isEmpty(wechatToken.getOpenId())) {
             log.info("前端传过来的部分参数为空");
             throw new ErrorException("网络传输异常，请重试");
         }
@@ -61,6 +61,12 @@ public class WechatServiceImpl implements WechatService {
                 throw new ErrorException("系统出现异常，请稍后重试");
             }
             userPo = wechatMapper.getUserByOpenId(user.getOpenId());
+        }
+        else if (!userPo.getWechatIcon().equals(wechatToken.getWechatIcon()) ||
+                !userPo.getName().equals(wechatToken.getName())) {
+            userPo.setName(wechatToken.getName());
+            userPo.setWechatIcon(wechatToken.getWechatIcon());
+            wechatMapper.updateInfo(userPo);
         }
         log.info("{}登录成功", userPo.getName());
         return userPo;
