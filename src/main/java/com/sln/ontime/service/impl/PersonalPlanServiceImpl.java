@@ -5,7 +5,6 @@ import com.sln.ontime.dao.TaskMapper;
 import com.sln.ontime.exception.ErrorException;
 import com.sln.ontime.model.po.Plan;
 import com.sln.ontime.model.po.Task;
-import com.sln.ontime.model.po.UserPo;
 import com.sln.ontime.model.vo.PlanVo;
 import com.sln.ontime.service.PersonalPlanService;
 import com.sln.ontime.util.VerifyUtil;
@@ -49,6 +48,27 @@ public class PersonalPlanServiceImpl implements PersonalPlanService {
         planVo.setTaskList(taskList);
         log.info("获取计划:{}的内容成功",planId);
         return planVo;
+    }
+
+    /**
+     * 获取用户所有的计划包括子任务的内容
+     *
+     * @param userId 用户的id
+     * @return
+     */
+    @Override
+    public List<PlanVo> getPersonalPlanList(Integer userId) {
+        List<PlanVo> planVoList = new ArrayList<>();
+        List<Integer> planIdList = planMapper.getPlanIdList(userId);
+        if(VerifyUtil.isEmpty(planIdList)){
+            log.info("该用户({})没有发布过计划",userId);
+            return null;
+        }
+        for (Integer planId:planIdList){
+            PlanVo planVo = getPersonalPlan(planId);
+            planVoList.add(planVo);
+        }
+        return planVoList;
     }
 
     /**
@@ -96,9 +116,17 @@ public class PersonalPlanServiceImpl implements PersonalPlanService {
             throw new ErrorException("系统出现异常，请稍后重试");
         }
         for (Task task:personalPlanVo.getTaskList()){
-            if(taskMapper.updateTask(task) != 1){
-                log.info("子计划{}修改失败",task.getTaskId());
-                throw new ErrorException("系统出现异常，请稍后重试");
+            if(VerifyUtil.isEmpty(task.getTaskId())){
+                task.setUserId(personalPlanVo.getUserId());
+                if(taskMapper.insertTask(task)!=1){
+                    log.info("修改计划时添加子计划{}失败",task.getTaskName());
+                    throw new ErrorException("系统出现异常，请稍后重试");
+                }
+            }else{
+                if(taskMapper.updateTask(task) != 1){
+                    log.info("子计划{}修改失败",task.getTaskId());
+                    throw new ErrorException("系统出现异常，请稍后重试");
+                }
             }
         }
         return personalPlanVo;
