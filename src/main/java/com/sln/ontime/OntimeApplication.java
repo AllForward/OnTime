@@ -41,10 +41,10 @@ public class OntimeApplication {
         Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
         connector.setScheme("http");
         //HTTP port
-        connector.setPort(80);
+        connector.setPort(11112);
         connector.setSecure(false);
         //HTTPS port
-        connector.setRedirectPort(443);
+        connector.setRedirectPort(10080);
         return connector;
     }
 }

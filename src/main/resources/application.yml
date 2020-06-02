@@ -29,10 +29,8 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
-http:
-  port: 80
 server:
-  port: 443
+  port: 10080
   tomcat:
       max-threads: 500
   ssl:
