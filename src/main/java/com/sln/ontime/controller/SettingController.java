@@ -1,13 +1,13 @@
 package com.sln.ontime.controller;
 
 import com.sln.ontime.model.dto.ResultBean;
+import com.sln.ontime.model.po.UserPo;
 import com.sln.ontime.service.impl.SettingServiceImpl;
 import lombok.extern.log4j.Log4j2;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Red Date.
@@ -25,9 +25,11 @@ public class SettingController {
      * 修改昵称
      * @return
      */
-    @PostMapping("updateNickname")
-    public ResultBean<?> updateNickname(@RequestParam("userId")Integer userId,@RequestParam("nickname")String nickname){
-        settingService.updateNickname(userId,nickname);
+    @GetMapping("updateNickname")
+    public ResultBean<?> updateNickname(@RequestParam("nickname")String nickname){
+        Subject subject = SecurityUtils.getSubject();
+        UserPo userPo = (UserPo) subject.getPrincipal();
+        settingService.updateNickname(userPo.getUserId(), nickname);
         return new ResultBean<>();
     }
 }

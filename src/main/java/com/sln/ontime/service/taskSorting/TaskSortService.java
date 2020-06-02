@@ -11,23 +11,21 @@ import java.util.*;
  * @Date 2020/5/10 13:00
  * @Version 1.0
  */
-public class TaskSortService {
+class TaskSortService {
 
     /**
-     * 短作业优
+     * 短作业优先
      */
     public static class ShortFirst implements Comparator<Task>{
 
         @Override
         public int compare(Task o1, Task o2) {
 
-            if(  Long.valueOf(o1.getEndTime().replaceAll("[^0-9]",""))
-                    > Long.valueOf(o2.getEndTime().replaceAll("[^0-9]",""))) {
+            if( o1.getLasting() > o2.getLasting() ) {
                 return 1;
-            }else if(  Long.valueOf( o1.getEndTime().replaceAll("[^0-9]","") )
-                    .equals(
-                            Long.valueOf( o2.getEndTime().replaceAll("[^0-9]","")))){
-                if(o1.getLasting() > o2.getLasting()){
+            }else if( o1.getLasting().equals(o2.getLasting()) ){
+                if( Long.valueOf(o1.getEndTime().replaceAll("[^0-9]",""))
+                        > Long.valueOf(o2.getEndTime().replaceAll("[^0-9]","")) ){
                     return 1;
                 }else{
                     return -1;
@@ -45,13 +43,11 @@ public class TaskSortService {
         @Override
         public int compare(Task o1, Task o2) {
 
-            if(  Long.valueOf(o1.getEndTime().replaceAll("[^0-9]",""))
-                    < Long.valueOf(o2.getEndTime().replaceAll("[^0-9]",""))) {
+            if( o1.getLasting() < o2.getLasting() ) {
                 return 1;
-            }else if(  Long.valueOf( o1.getEndTime().replaceAll("[^0-9]","") )
-                    .equals(
-                            Long.valueOf( o2.getEndTime().replaceAll("[^0-9]","")))){
-                if(o1.getLasting() < o2.getLasting()){
+            }else if( o1.getLasting().equals(o2.getLasting()) ){
+                if( Long.valueOf(o1.getEndTime().replaceAll("[^0-9]",""))
+                        > Long.valueOf(o2.getEndTime().replaceAll("[^0-9]","")) ){
                     return 1;
                 }else{
                     return -1;
@@ -82,6 +78,21 @@ public class TaskSortService {
             }else{
                 return -1;
             }
+        }
+    }
+    /**
+     * 按照用户起止时间的顺序
+     */
+    public static class UserDefine implements Comparator<Task>{
+        @Override
+        public int compare(Task o1, Task o2) {
+
+            if( Long.valueOf( o1.getStartTime().replaceAll("[^0-9]","") )
+                    >
+                    Long.valueOf( o2.getStartTime().replaceAll("[^0-9]",""))) {
+                return 1;
+            }
+            return -1;
         }
     }
 

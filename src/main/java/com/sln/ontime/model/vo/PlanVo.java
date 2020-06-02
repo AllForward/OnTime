@@ -22,6 +22,9 @@ public class PlanVo {
 
     private Integer planId;
 
+    //若为团队计划则为groupId
+    private Integer type;
+
     private List<Task> taskList;
 
 }

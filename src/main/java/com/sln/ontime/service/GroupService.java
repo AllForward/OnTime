@@ -1,9 +1,13 @@
 package com.sln.ontime.service;
 
 import com.sln.ontime.model.po.Group;
+import com.sln.ontime.model.po.Plan;
 import com.sln.ontime.model.po.UserPo;
 import com.sln.ontime.model.vo.GroupVo;
 import com.sln.ontime.model.vo.MemberVo;
+import com.sln.ontime.model.vo.PlanVo;
+
+import java.util.List;
 
 public interface GroupService {
 
@@ -12,6 +16,16 @@ public interface GroupService {
     GroupVo addGroup(Group group, UserPo userPo);
 
     String deleteGroup(Integer groupId, UserPo userPo);
+
+    List<GroupVo> getGroupList(Integer userId);
+
+    List<Plan> getGroupPlan(Integer groupId, UserPo userPo);
+
+    PlanVo addGroupPlan(PlanVo planVo);
+
+    PlanVo updateGroupPlan(PlanVo planVo);
+
+    boolean deleteGroupPlan(Integer planId, UserPo userPo);
 
 
 }
