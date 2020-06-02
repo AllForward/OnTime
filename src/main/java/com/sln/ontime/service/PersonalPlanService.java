@@ -1,7 +1,8 @@
 package com.sln.ontime.service;
 
-import com.sln.ontime.model.po.UserPo;
 import com.sln.ontime.model.vo.PlanVo;
+
+import java.util.List;
 
 /**
  * 个人计划
@@ -16,6 +17,13 @@ public interface PersonalPlanService {
      * @return 个人计划的内容
      */
     PlanVo getPersonalPlan(Integer planId);
+
+    /**
+     * 获取用户所有的计划包括子任务的内容
+     * @param userId 用户的id
+     * @return
+     */
+    List<PlanVo> getPersonalPlanList(Integer userId);
 
     /**
      * 添加个人计划

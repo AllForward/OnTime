@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.sln.ontime.model.dto.ResultBean;
 import com.sln.ontime.model.po.UserPo;
 import com.sln.ontime.model.vo.PlanVo;
-import com.sln.ontime.model.vo.UserVo;
 import com.sln.ontime.service.impl.PersonalPlanServiceImpl;
 import lombok.extern.log4j.Log4j2;
 import org.apache.shiro.SecurityUtils;
@@ -12,6 +11,7 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 
 /**
@@ -28,14 +28,15 @@ public class PersonalPlanController {
 
     /**
      * 获取用户的个人计划
-     * @param planId 计划id
      * @return 个人计划
      */
     @GetMapping("get")
-    public ResultBean<?> getPersonalPlan(@RequestParam(value = "planId")Integer planId){
+    public ResultBean<?> getPersonalPlan(){
         log.info("开始获取用户的个人计划");
-        PlanVo planVo = personalPlanService.getPersonalPlan(planId);
-        return new ResultBean<>(planVo);
+        Subject subject = SecurityUtils.getSubject();
+        UserPo userPo = (UserPo) subject.getPrincipal();
+        List<PlanVo> planVoList = personalPlanService.getPersonalPlanList(userPo.getUserId());
+        return new ResultBean<>(planVoList);
     }
 
     /**
@@ -64,6 +65,9 @@ public class PersonalPlanController {
     public ResultBean<?> updatePersonalPlan(@RequestBody String planContent){
         log.info("开始修改个人计划信息");
         PlanVo planVo = JSONObject.parseObject(planContent, PlanVo.class);
+        Subject subject = SecurityUtils.getSubject();
+        UserPo userPo = (UserPo) subject.getPrincipal();
+        planVo.setUserId(userPo.getUserId());
         PlanVo result = personalPlanService.updatePersonalPlan(planVo);
         return new ResultBean<>(result);
     }

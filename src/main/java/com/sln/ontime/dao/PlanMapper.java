@@ -28,4 +28,11 @@ public interface PlanMapper {
     @Select("select plan_id,user_id,plan_name,type from plan where type = #{type}")
     List<Plan> getPlanByType(Integer type);
 
+    /**
+     * 获取该用户的所有计划的id
+     * @param userId
+     * @return
+     */
+    @Select("select plan_id from plan where user_id = #{userId}")
+    List<Integer> getPlanIdList(Integer userId);
 }
