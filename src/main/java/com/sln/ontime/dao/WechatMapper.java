@@ -20,6 +20,6 @@ public interface WechatMapper {
     @Update("update user set name = #{nickname} where user_id = #{userId}")
     Integer updateNickname(@Param("nickname")String nickname,@Param("userId")Integer userId);
 
-    @Update("update user set name = #{name} and wechat_icno = #{wechatIcon} where user_id = #{userId}")
+    @Update("update user set name = #{name}, wechat_icno = #{wechatIcon} where user_id = #{userId}")
     Integer updateInfo(UserPo userPo);
 }
