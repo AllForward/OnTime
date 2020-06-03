@@ -47,6 +47,7 @@ public class PersonalPlanController {
     @PostMapping("set")
     public ResultBean<?> insertPersonalPlan(@RequestBody String planContent){
         log.info("开始插入个人计划信息");
+        System.out.println(planContent);
         PlanVo planVo = JSONObject.parseObject(planContent, PlanVo.class);
         Subject subject = SecurityUtils.getSubject();
         UserPo userPo = (UserPo) subject.getPrincipal();
