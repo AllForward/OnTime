@@ -80,9 +80,10 @@ public class PersonalPlanServiceImpl implements PersonalPlanService {
     @Transactional
     @Override
     public PlanVo insertPersonalPlan(PlanVo personalPlanVo) {
+        System.out.println(personalPlanVo);
         Plan plan = new Plan();
-        plan.setType(0);
         BeanUtils.copyProperties(personalPlanVo,plan);
+        plan.setType(0);
         if(planMapper.insertPlan(plan)!=1){
             log.info("个人计划插入数据库失败,可能部分字段为空");
             throw new ErrorException("系统出现异常，请稍后重试");
@@ -100,6 +101,7 @@ public class PersonalPlanServiceImpl implements PersonalPlanService {
         }
         personalPlanVo.setPlanId(plan.getPlanId());
         personalPlanVo.setTaskList(result);
+        personalPlanVo.setType(0);
         return personalPlanVo;
     }
 
