@@ -1,3 +1,4 @@
+/*
 package com.sln.ontime.handler;
 
 import com.sln.ontime.util.VerifyUtil;
@@ -11,11 +12,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
+*/
 /**
  * @description
  * @author guopei
  * @date 2020-06-01 09:36
- */
+ *//*
+
 public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
     public XssHttpServletRequestWrapper(HttpServletRequest request) {
@@ -123,3 +126,4 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     }
 
 }
+*/

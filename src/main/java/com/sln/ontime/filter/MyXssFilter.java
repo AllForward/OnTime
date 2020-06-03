@@ -1,3 +1,4 @@
+/*
 package com.sln.ontime.filter;
 
 import com.sln.ontime.handler.XssHttpServletRequestWrapper;
@@ -10,11 +11,13 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+*/
 /**
  * @description 预防xss攻击过滤器
  * @author guopei
  * @date 2020-06-01 09:27
- */
+ *//*
+
 @Log4j2
 @WebFilter(filterName = "XssFilter", urlPatterns = {"/group/*", "/personal_plan/*", "/setting/*"})
 @Component
@@ -42,3 +45,4 @@ public class MyXssFilter implements Filter {
         this.filterConfig = null;
     }
 }
+*/
