@@ -7,9 +7,6 @@ import com.sln.ontime.model.po.UserPo;
 import com.sln.ontime.model.vo.UserVo;
 import com.sln.ontime.service.WechatService;
 import com.sln.ontime.shiro.token.WechatToken;
-import com.sln.ontime.util.RSAUtil;
-import com.sln.ontime.util.RestTemplateUtil;
-import com.sln.ontime.util.UrlsUtil;
 import com.sln.ontime.util.VerifyUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.Map;
 
 
 /**
@@ -42,8 +38,8 @@ public class WechatServiceImpl implements WechatService {
     public UserPo login(WechatToken wechatToken) throws Exception {
 
         log.info("正在执行登录接口");
-        //Todo 正式上线需要传头像和昵称
-        if (VerifyUtil.isEmpty(wechatToken.getOpenId())) {
+        if (VerifyUtil.isEmpty(wechatToken.getOpenId()) || VerifyUtil.isEmpty(wechatToken.getWechatIcon()) ||
+        VerifyUtil.isEmpty(wechatToken.getName())) {
             log.info("前端传过来的部分参数为空");
             throw new ErrorException("网络传输异常，请重试");
         }
@@ -61,6 +57,11 @@ public class WechatServiceImpl implements WechatService {
                 throw new ErrorException("系统出现异常，请稍后重试");
             }
             userPo = wechatMapper.getUserByOpenId(user.getOpenId());
+        }
+        else if (VerifyUtil.isEmpty(userPo.getName()) || VerifyUtil.isEmpty(userPo.getWechatIcon())) {
+            userPo.setName(wechatToken.getName());
+            userPo.setWechatIcon(wechatToken.getWechatIcon());
+            wechatMapper.updateInfo(userPo);
         }
         else if (!userPo.getWechatIcon().equals(wechatToken.getWechatIcon()) ||
                 !userPo.getName().equals(wechatToken.getName())) {
