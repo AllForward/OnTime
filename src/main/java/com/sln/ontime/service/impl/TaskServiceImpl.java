@@ -7,6 +7,7 @@ import com.sln.ontime.model.po.UserPo;
 import com.sln.ontime.model.vo.SortVo;
 import com.sln.ontime.service.TaskService;
 import com.sln.ontime.service.taskSorting.StartSortService;
+import com.sln.ontime.util.TimeUtil;
 import com.sln.ontime.util.VerifyUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,13 @@ public class TaskServiceImpl implements TaskService {
             log.info("前端传过来的部分数据为空");
             throw new ErrorException("请选择要获取的子任务时间");
         }
+        //对日期格式进行校验
+        if (!sortVo.getDate().matches("^((?:19|20)\\d\\d)-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$")) {
+            log.info("日期格式错误");
+            throw new ErrorException("日期错误");
+        }
+        sortVo.setStartDate(sortVo.getDate() + " 00:00:00");
+        sortVo.setEndDate(TimeUtil.nextDay(sortVo.getStartDate()));
         sortVo.setUserId(userPo.getUserId());
         List<Task> taskList = taskMapper.getTasksByUserIdAndTime(sortVo);
         if (VerifyUtil.isEmpty(taskList)) {

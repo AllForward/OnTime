@@ -1,5 +1,6 @@
 package com.sln.ontime.util;
 
+import com.sln.ontime.exception.ErrorException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.map.HashedMap;
 
@@ -156,6 +157,10 @@ public class TimeUtil {
             return null;
         }
         Date expire = stringToDate(expireTime);
+        if (null == expire) {
+            log.info("转换下一天日期失败");
+            throw new ErrorException("系统错误，请稍后重试");
+        }
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(expire);
         calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 1);
@@ -253,5 +258,8 @@ public class TimeUtil {
         return (calendarEnd.getTimeInMillis() - calendarStart.getTimeInMillis())/(1000*24*3600);
     }
 
+    public static void main(String[] args) {
+        System.out.println(TimeUtil.nextDay("2020-06-04 00:00:00"));
+    }
 
 }
