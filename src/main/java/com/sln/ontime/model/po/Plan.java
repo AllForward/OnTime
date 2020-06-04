@@ -27,4 +27,7 @@ public class Plan {
     //大计划类型标识(非0及为groupId,0为个人计划)
     private Integer type;
 
+    //团队昵称
+    private String groupName;
+
 }

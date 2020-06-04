@@ -1,15 +1,12 @@
-server:
-  port: 8080
-  tomcat:
-    max-threads: 500
-
 logging:
   config: classpath:log4j2-dev.xml
 spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
-
+  http:
+    encoding:
+      force: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
@@ -33,4 +30,14 @@ spring:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
+
+server:
+  port: 10080
+  tomcat:
+      max-threads: 500
+  ssl:
+    key-store: classpath:4000650_sln.tplanner.cn.pfx
+    key-store-password: g41V8S9G
+    key-store-type: PKCS12
+    ciphers: TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256
 
