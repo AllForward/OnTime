@@ -118,6 +118,7 @@ public class PersonalPlanServiceImpl implements PersonalPlanService {
             throw new ErrorException("系统出现异常，请稍后重试");
         }
         for (Task task:personalPlanVo.getTaskList()){
+            task.setPlanId(personalPlanVo.getPlanId());
             if(VerifyUtil.isEmpty(task.getTaskId())){
                 task.setUserId(personalPlanVo.getUserId());
                 if(taskMapper.insertTask(task)!=1){
