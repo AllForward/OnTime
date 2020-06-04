@@ -35,9 +35,15 @@ server:
   port: 10080
   tomcat:
       max-threads: 500
+#  ssl:
+#    key-store: classpath:4000650_sln.tplanner.cn.pfx
+#    key-store-password: g41V8S9G
+#    key-store-type: PKCS12
+#    ciphers: TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256
+
   ssl:
-    key-store: classpath:4000650_sln.tplanner.cn.pfx
-    key-store-password: g41V8S9G
+    key-store: classpath:4014070_timer.boycharse.top.pfx
+    key-store-password: qcvUSEk2
     key-store-type: PKCS12
     ciphers: TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256
 
