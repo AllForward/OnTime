@@ -79,22 +79,25 @@ class TaskListService {
             if(endTimel > 123000){
                 mark = i;
                 markj = i;
-                break;
+                if(mark > 0)
+                    break;
             }else{
                 newTaskList.get(i).setStartTime(startTime);
                 newTaskList.get(i).setEndTime(endTime);
             }
         }
         /*下午的任务从14：00开始*/
-        for( ; mark < size; mark++){
-            if(mark == markj)
-                startTime = firstStartTime.substring(0,11) + "14:00:00";
-            else
-                startTime = startTimeUtil(newTaskList.get(mark - 1).getEndTime(), 10);
+        if(mark > 0) {
+            for (; mark < size; mark++) {
+                if (mark == markj)
+                    startTime = firstStartTime.substring(0, 11) + "14:00:00";
+                else
+                    startTime = startTimeUtil(newTaskList.get(mark - 1).getEndTime(), 10);
 
-            endTime = startTimeUtil(startTime, newTaskList.get(mark).getLasting());
-            newTaskList.get(mark).setStartTime(startTime);
-            newTaskList.get(mark).setEndTime(endTime);
+                endTime = startTimeUtil(startTime, newTaskList.get(mark).getLasting());
+                newTaskList.get(mark).setStartTime(startTime);
+                newTaskList.get(mark).setEndTime(endTime);
+            }
         }
         return newTaskList;
     }
