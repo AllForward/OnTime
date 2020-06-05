@@ -33,7 +33,8 @@ public interface TaskMapper {
     List<Task> getTaskByPlanId(Integer planId);
 
     @Select("select task_id, task_name, lasting, start_time, end_time, priority, status from task where user_id = #{userId} and " +
-            "`status` = 0 and ((start_time >= #{startDate} and start_time <= #{endDate}) or end_time <= #{endDate})")
+            "`status` = 0 and ((start_time >= #{startDate} and start_time <= #{endDate}) or (start_time <= #{endDate} and " +
+            "end_time >= #{startDate}))")
     List<Task> getTasksByUserIdAndTime(SortVo sortVo);
 
     @Select("select user_id from task where task_id = #{taskId}")
