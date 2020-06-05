@@ -1,6 +1,8 @@
 package com.sln.ontime.util;
 
 import com.sln.ontime.exception.ErrorException;
+import com.sln.ontime.model.po.Task;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.map.HashedMap;
 
@@ -195,6 +197,27 @@ public class TimeUtil {
             return time;
         }
         return time;
+    }
+
+    /**
+     * 日期格式是否合法
+     * @return
+     */
+    public static Boolean isLegal(Task task) {
+        //判断日期格式是否正确
+        Date startTime = stringToDate(task.getStartTime());
+        Date endTime = stringToDate(task.getEndTime());
+        if (null == startTime || null == endTime) {
+            log.info("日期格式不符合规范");
+            return false;
+        }
+        //比较开始时间与结束时间
+        if (after(startTime, endTime)) {
+            //说明开始时间在截至时间之后
+            log.info("开始时间在截至时间之后, 格式不合法");
+            return false;
+        }
+        return true;
     }
 
     public static String getTimeByType(String type) {

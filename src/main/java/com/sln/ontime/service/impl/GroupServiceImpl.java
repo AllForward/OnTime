@@ -10,10 +10,12 @@ import com.sln.ontime.model.vo.MemberVo;
 import com.sln.ontime.model.vo.PlanVo;
 import com.sln.ontime.service.GroupService;
 import com.sln.ontime.util.RSAUtil;
+import com.sln.ontime.util.TimeUtil;
 import com.sln.ontime.util.VerifyUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -275,6 +277,7 @@ public class GroupServiceImpl implements GroupService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = ErrorException.class)
     public PlanVo addGroupPlan(PlanVo planVo) {
         //先对数据进行校验
         if (VerifyUtil.isNull(planVo) || VerifyUtil.isEmpty(planVo.getPlanName()) || VerifyUtil.isEmpty(planVo.getType())) {
@@ -296,6 +299,10 @@ public class GroupServiceImpl implements GroupService {
         if (!VerifyUtil.isEmpty(taskList)) {
             List<Task> result = new ArrayList<>();
             for (Task task : taskList){
+                //判断日期格式以及开始时间与结束时间的先后顺序是否满足要求
+                if (!TimeUtil.isLegal(task)) {
+                    throw new ErrorException("日期格式错误");
+                }
                 task.setPlanId(plan.getPlanId());
                 task.setUserId(planVo.getUserId());
                 if(taskMapper.insertTask(task) != 1){
@@ -312,6 +319,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional(rollbackFor = ErrorException.class)
     public PlanVo updateGroupPlan(PlanVo planVo) {
         //先对数据进行校验
         if (VerifyUtil.isNull(planVo) || VerifyUtil.isEmpty(planVo.getPlanName()) || VerifyUtil.isEmpty(planVo.getType()
@@ -329,6 +337,10 @@ public class GroupServiceImpl implements GroupService {
             for (Task task : taskList) {
                 task.setPlanId(planVo.getPlanId());
                 task.setUserId(planVo.getUserId());
+                //判断日期格式以及开始时间与结束时间的先后顺序是否满足要求
+                if (!TimeUtil.isLegal(task)) {
+                    throw new ErrorException("日期格式错误");
+                }
                 if (taskMapper.updateTask(task) != 1) {
                     log.info("子任务更新数据库失败");
                     throw new ErrorException("系统出现异常，请稍后重试");
