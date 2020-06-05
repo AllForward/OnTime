@@ -14,6 +14,8 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 /**
  * @description
  * @author guopei
@@ -88,7 +90,7 @@ public class GroupController {
      * @return
      */
     @PostMapping("/addGroupPlan")
-    public ResultBean<?> addGroupPlan(@RequestBody PlanVo planVo) {
+    public ResultBean<?> addGroupPlan(@Valid @RequestBody PlanVo planVo) {
         Subject subject = SecurityUtils.getSubject();
         UserPo userPo = (UserPo) subject.getPrincipal();
         planVo.setUserId(userPo.getUserId());
@@ -96,7 +98,7 @@ public class GroupController {
     }
 
     @PostMapping("/updateGroupPlan")
-    public ResultBean<?> updateGroupPlan(@RequestBody PlanVo planVo) {
+    public ResultBean<?> updateGroupPlan(@Valid @RequestBody PlanVo planVo) {
         Subject subject = SecurityUtils.getSubject();
         UserPo userPo = (UserPo) subject.getPrincipal();
         planVo.setUserId(userPo.getUserId());

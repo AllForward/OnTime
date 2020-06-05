@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Pattern;
+
 /**
  * @description
  * @author guopei
@@ -25,6 +27,7 @@ public class Task {
 
     private String taskName;
 
+    @Pattern(regexp = "^[1-9]{1}[0-9]*$")
     //任务耗时(以分钟为单位)
     private Integer lasting;
 
