@@ -24,10 +24,10 @@ class TaskListService {
     private String getFirstStartTime(List<Task> newTaskList){
         String firstStartTime = newTaskList.get(0).getStartTime();
         long fst;
-        for( int i = 0; i < newTaskList.size(); i++ ){
-            fst = Long.valueOf( firstStartTime.replaceAll("[^0-9]","") );
-            if( fst > Long.valueOf(newTaskList.get(i).getStartTime().replaceAll("[^0-9]","")) ) {
-                firstStartTime = newTaskList.get(i).getStartTime();
+        for (Task task : newTaskList) {
+            fst = Long.valueOf(firstStartTime.replaceAll("[^0-9]", ""));
+            if (fst > Long.valueOf(task.getStartTime().replaceAll("[^0-9]", ""))) {
+                firstStartTime = task.getStartTime();
             }
         }
         return firstStartTime;
