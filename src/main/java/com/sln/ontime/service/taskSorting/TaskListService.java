@@ -58,7 +58,7 @@ class TaskListService {
      * 设置任务间的休息时间
      * @return space
      */
-    private static int setSpaceUtil(int lasting){
+    private int setSpaceUtil(int lasting){
         int space;
         if(lasting <= 10)
             space = 0;
