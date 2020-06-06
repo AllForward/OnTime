@@ -341,9 +341,18 @@ public class GroupServiceImpl implements GroupService {
                 if (!TimeUtil.isLegal(task)) {
                     throw new ErrorException("日期格式错误");
                 }
-                if (taskMapper.updateTask(task) != 1) {
-                    log.info("子任务更新数据库失败");
-                    throw new ErrorException("系统出现异常，请稍后重试");
+                if (VerifyUtil.isEmpty(task.getTaskId())) {
+                    log.info("添加新的子任务");
+                    if (taskMapper.insertTask(task) != 1) {
+                        log.info("子任务插入数据库失败");
+                        throw new ErrorException("数据库异常，请稍后重试");
+                    }
+                }
+                else {
+                    if (taskMapper.updateTask(task) != 1) {
+                        log.info("子任务更新数据库失败");
+                        throw new ErrorException("数据库异常，请稍后重试");
+                    }
                 }
                 result.add(task);
             }

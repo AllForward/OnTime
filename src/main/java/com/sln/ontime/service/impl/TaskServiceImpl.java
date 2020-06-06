@@ -33,7 +33,7 @@ public class TaskServiceImpl implements TaskService {
      * @return
      */
     @Override
-    public Task updateTaskStatus(Task task) {
+    public Task updateTaskStatus(Task task, UserPo userPo) {
 
         if (VerifyUtil.isNull(task) || VerifyUtil.isEmpty(task.getTaskId()) || VerifyUtil.isEmpty(task.getStatus())) {
             log.info("前端传过来的部分数据为空");
@@ -43,9 +43,17 @@ public class TaskServiceImpl implements TaskService {
             log.info("前端传过来的数据格式错误");
             throw new ErrorException("请正确填写子任务状态");
         }
-        if (taskMapper.updateTaskStatus(task) != 1) {
-            log.info("更新子任务{}失败", task.getTaskId());
-            throw new ErrorException("系统异常，请稍后重试");
+        //对子任务的权限进行校验
+        Task taskVo = taskMapper.getTaskByTaskId(task.getTaskId());
+        if (!VerifyUtil.isNull(taskVo)) {
+            if (!taskVo.getUserId().equals(userPo.getUserId())) {
+                log.info("该子计划不属于用户{}", taskVo.getUserId());
+                throw new ErrorException("您无权限修改该子计划");
+            }
+            if (taskMapper.updateTaskStatus(task) != 1) {
+                log.info("更新子任务{}失败", task.getTaskId());
+                throw new ErrorException("系统异常，请稍后重试");
+            }
         }
         return task;
     }
