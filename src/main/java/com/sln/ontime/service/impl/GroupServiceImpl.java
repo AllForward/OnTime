@@ -65,8 +65,14 @@ public class GroupServiceImpl implements GroupService {
         //先判断是要删除还是添加成员
         if (memberVo.getType().equals("add")) {
             //说明是添加成员
+            //先查看本人是否有在团队中
+            if (!VerifyUtil.isNull(memberMapper.getMember(member.getGroupId(), member.getMemberId()))) {
+                log.info("用户已经在该团队中");
+                throw new ErrorException("您已经在该团队中");
+            }
             //判断下是否已经达到上限
-            if (memberMapper.getGroupMemberNum(memberVo.getGroupId()) < group.getLimit()) {
+            Integer limit = memberMapper.getGroupMemberNum(memberVo.getGroupId());
+            if (limit < group.getLimit()) {
                 if (memberMapper.insertMember(member) != 1) {
                     log.info("将id为{}的成员添加到Id为{}的队伍失败", member.getMemberId(), member.getGroupId());
                     throw new ErrorException("服务器异常，请重试");
@@ -78,6 +84,11 @@ public class GroupServiceImpl implements GroupService {
             }
         }
         if (memberVo.getType().equals("delete")) {
+            //先查看本人是否有在团队中
+            if (VerifyUtil.isNull(memberMapper.getMember(member.getGroupId(), member.getMemberId()))) {
+                log.info("用户不在该团队中");
+                throw new ErrorException("您不是该团队的成员");
+            }
             //说明是删除成员，需要先校验执行该操作人的身份-->若为群主则可以删除别人||或者本人自己想退出该团队
             if (group.getCreatorId().equals(userPo.getUserId()) || member.getMemberId().equals(userPo.getUserId())) {
                 //说明是群或者本人想退群，则有权限
@@ -91,7 +102,6 @@ public class GroupServiceImpl implements GroupService {
                 throw new ErrorException("您没有权限将该成员踢出本团队");
             }
         }
-        //Todo 将返回的数据进行完善
         GroupVo groupVo = new GroupVo();
         groupVo.setGroupId(memberVo.getGroupId());
         groupVo.setGroupName(group.getGroupName());

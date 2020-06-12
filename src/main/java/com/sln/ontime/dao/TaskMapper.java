@@ -3,7 +3,6 @@ package com.sln.ontime.dao;
 import com.sln.ontime.model.po.Task;
 import com.sln.ontime.model.vo.SortVo;
 import org.apache.ibatis.annotations.*;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

@@ -2,6 +2,7 @@ package com.sln.ontime.service.impl;
 
 import com.sln.ontime.model.po.Task;
 import com.sln.ontime.model.vo.PlanVo;
+import com.sln.ontime.service.GroupService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +27,8 @@ public class PersonalPlanServiceImplTest {
 
     @Autowired
     private PersonalPlanServiceImpl personalPlanService;
+
+    private GroupService groupService;
 
     @Before
     public void before() throws Exception { 

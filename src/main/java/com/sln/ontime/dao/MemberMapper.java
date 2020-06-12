@@ -26,4 +26,7 @@ public interface MemberMapper {
 
     @Select("select group_id from member where member_id = #{userId}")
     List<Member> getGroupsByMemberId(Integer userId);
+
+    @Select("select group_id, member_id from member where group_id = #{groupId} and member_id = #{memberId}")
+    Member getMember(Integer groupId, Integer memberId);
 }
