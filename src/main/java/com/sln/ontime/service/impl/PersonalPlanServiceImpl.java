@@ -130,6 +130,7 @@ public class PersonalPlanServiceImpl implements PersonalPlanService {
             }
             if(VerifyUtil.isEmpty(task.getTaskId())){
                 task.setUserId(personalPlanVo.getUserId());
+                task.setPlanId(personalPlanVo.getPlanId());
                 if(taskMapper.insertTask(task)!=1){
                     log.info("修改计划时添加子计划{}失败",task.getTaskName());
                     throw new ErrorException("系统出现异常，请稍后重试");
