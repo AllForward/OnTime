@@ -66,7 +66,8 @@ public class GroupServiceImpl implements GroupService {
         if (memberVo.getType().equals("add")) {
             //说明是添加成员
             //判断下是否已经达到上限
-            if (memberMapper.getGroupMemberNum(memberVo.getGroupId()) < group.getLimit()) {
+            Integer limit = memberMapper.getGroupMemberNum(memberVo.getGroupId());
+            if (limit < group.getLimit()) {
                 if (memberMapper.insertMember(member) != 1) {
                     log.info("将id为{}的成员添加到Id为{}的队伍失败", member.getMemberId(), member.getGroupId());
                     throw new ErrorException("服务器异常，请重试");
