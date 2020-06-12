@@ -313,6 +313,11 @@ public class GroupServiceImpl implements GroupService {
                 if (!TimeUtil.isLegal(task)) {
                     throw new ErrorException("日期格式错误");
                 }
+                if (VerifyUtil.isEmpty(task.getTaskName()) || VerifyUtil.isEmpty(task.getLasting())
+                        || VerifyUtil.isEmpty(task.getPriority()) || VerifyUtil.isEmpty(task.getStatus())) {
+                    log.info("前端传递的参数不完整");
+                    throw new ErrorException("请填写完整子计划内容");
+                }
                 task.setPlanId(plan.getPlanId());
                 task.setUserId(planVo.getUserId());
                 if(taskMapper.insertTask(task) != 1){

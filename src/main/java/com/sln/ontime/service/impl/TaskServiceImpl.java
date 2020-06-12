@@ -48,7 +48,7 @@ public class TaskServiceImpl implements TaskService {
         if (!VerifyUtil.isNull(taskVo)) {
             if (!taskVo.getUserId().equals(userPo.getUserId())) {
                 log.info("该子计划不属于用户{}", taskVo.getUserId());
-                throw new ErrorException("您无权限修改该子计划");
+                throw new ErrorException("您无权修改该子计划");
             }
             if (taskMapper.updateTaskStatus(task) != 1) {
                 log.info("更新子任务{}失败", task.getTaskId());
