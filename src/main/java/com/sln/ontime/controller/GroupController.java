@@ -64,6 +64,13 @@ public class GroupController {
         return new ResultBean<>(groupService.getGroupList(userPo.getUserId()));
     }
 
+    @GetMapping("/getListGroupPlan")
+    public ResultBean<?> getListGroupPlan() {
+        Subject subject = SecurityUtils.getSubject();
+        UserPo userPo = (UserPo) subject.getPrincipal();
+        return new ResultBean<>(groupService.getListGroupPlan(userPo));
+    }
+
     /**
      * 获取团队的所有计划
      * @param groupId

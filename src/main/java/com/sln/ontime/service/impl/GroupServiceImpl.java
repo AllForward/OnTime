@@ -198,13 +198,49 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public List<Plan> getListGroupPlan(UserPo userPo) {
+        //获取用户的所有团队
+        List<Member> memberList = memberMapper.getGroupsByMemberId(userPo.getUserId());
+        if (VerifyUtil.isEmpty(memberList)) {
+            log.info("用户{}还没有加入任何团队", userPo.getUserId());
+            return null;
+        }
+        List<Plan> listGroupPlan = new ArrayList<>();
+        for (Member member : memberList) {
+            //获取每个团队的信息
+            Group group = groupMapper.getGroupByGroupId(member.getGroupId());
+            List<Plan> planList = planMapper.getPlanByType(member.getGroupId());
+            if (VerifyUtil.isEmpty(planList)) {
+                log.info("团队{}暂无计划", member.getGroupId());
+                continue;
+            }
+            for (Plan plan : planList) {
+                List<Task> taskList = taskMapper.getTaskByPlanId(plan.getPlanId());
+                if (VerifyUtil.isEmpty(taskList)) {
+                    plan.setTaskList(null);
+                    plan.setGroupName(group.getGroupName());
+                    continue;
+                }
+                for (Task task : taskList) {
+                    task.setUserVo(wechatMapper.getUserByUserId(task.getUserId()));
+                }
+                plan.setTaskList(taskList);
+                plan.setGroupName(group.getGroupName());
+            }
+            listGroupPlan.addAll(planList);
+        }
+        return listGroupPlan;
+    }
+
+    @Override
     public List<Plan> getGroupPlan(Integer groupId, UserPo userPo) {
         if (VerifyUtil.isEmpty(groupId)) {
             log.info("团队id为空");
             throw new ErrorException("请选择要查询的团队");
         }
         //查看该团队是否存在
-        if (VerifyUtil.isNull(groupMapper.getGroupByGroupId(groupId))) {
+        Group group = groupMapper.getGroupByGroupId(groupId);
+        if (VerifyUtil.isNull(group)) {
             log.info("id为{}的团队不存在", groupId);
             throw new ErrorException("该团队不存在");
         }
@@ -220,7 +256,11 @@ public class GroupServiceImpl implements GroupService {
                 }
                 for (Plan plan : planList) {
                     List<Task> taskList = taskMapper.getTaskByPlanId(plan.getPlanId());
+                    for (Task task : taskList) {
+                        task.setUserVo(wechatMapper.getUserByUserId(task.getUserId()));
+                    }
                     plan.setTaskList(taskList);
+                    plan.setGroupName(group.getGroupName());
                 }
                 return planList;
             }

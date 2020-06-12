@@ -19,6 +19,8 @@ public interface GroupService {
 
     List<GroupVo> getGroupList(Integer userId);
 
+    List<Plan> getListGroupPlan(UserPo userPo);
+
     List<Plan> getGroupPlan(Integer groupId, UserPo userPo);
 
     PlanVo addGroupPlan(PlanVo planVo);

@@ -1,5 +1,6 @@
 package com.sln.ontime.model.po;
 
+import com.sln.ontime.model.vo.UserVo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,8 @@ public class Task {
 
     private Integer userId;
 
+    private UserPo userVo;
+
     private String taskName;
 
     //任务耗时(以分钟为单位)
@@ -35,69 +38,6 @@ public class Task {
     //完成情况(0表示未完成,1表示已完成)
     private Integer status;
 
-    public Integer getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(Integer taskId) {
-        this.taskId = taskId;
-    }
-
-    public Integer getPlanId() {
-        return planId;
-    }
-
-    public void setPlanId(Integer planId) {
-        this.planId = planId;
-    }
-
-    public String getTaskName() {
-        return taskName;
-    }
-
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
-    }
-
-    public Integer getLasting() {
-        return lasting;
-    }
-
-    public void setLasting(Integer lasting) {
-        this.lasting = lasting;
-    }
-
-    public String getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
-
-    public Integer getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Integer priority) {
-        this.priority = priority;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
 
 
 
