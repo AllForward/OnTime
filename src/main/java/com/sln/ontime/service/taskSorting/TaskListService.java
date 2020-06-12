@@ -24,10 +24,10 @@ class TaskListService {
     private String getFirstStartTime(List<Task> newTaskList){
         String firstStartTime = newTaskList.get(0).getStartTime();
         long fst;
-        for( int i = 0; i < newTaskList.size(); i++ ){
-            fst = Long.valueOf( firstStartTime.replaceAll("[^0-9]","") );
-            if( fst > Long.valueOf(newTaskList.get(i).getStartTime().replaceAll("[^0-9]","")) ) {
-                firstStartTime = newTaskList.get(i).getStartTime();
+        for (Task task : newTaskList) {
+            fst = Long.valueOf(firstStartTime.replaceAll("[^0-9]", ""));
+            if (fst > Long.valueOf(task.getStartTime().replaceAll("[^0-9]", ""))) {
+                firstStartTime = task.getStartTime();
             }
         }
         return firstStartTime;
@@ -53,6 +53,26 @@ class TaskListService {
         return format.format(startTime);
     }
 
+
+    /**
+     * 设置任务间的休息时间
+     * @return space
+     */
+    private int setSpaceUtil(int lasting){
+        int space;
+        if(lasting <= 10)
+            space = 0;
+        else if(lasting <= 30)
+            space = 5;
+        else if(lasting <= 60)
+            space = 10;
+        else if(lasting <= 90)
+            space = 15;
+        else
+            space = 20;
+        return space;
+    }
+
     /**
      * 返回排序后的列表
      * @return newTaskList
@@ -60,41 +80,48 @@ class TaskListService {
     List<Task> updateTaskList(List<Task> newTaskList){
         int mark = 0;
         int markj = 0;
+        int space = 0;
         int size = newTaskList.size();
         String startTime;
         String endTime;
         String firstStartTime = getFirstStartTime(newTaskList);
         
-        /*为排序好的列表中task对象startTime重新赋值*/
-        /*上午的任务从任务列表最早开始时间开始，不超过12：30结束*/
+        /*为排序好的列表中task对象startTime重新赋值.
+          上午的任务从任务列表最早开始时间开始，不超过12：30结束.
+          每个任务之间休息space分钟.*/
         for( int i = 0; i < size; i++ ){
-            if( i == 0 )
+            if( i == 0 ) {
                 startTime = firstStartTime;
-            else
-                //每个任务之间休息10分钟
-                startTime = startTimeUtil(newTaskList.get(i - 1).getEndTime(),10);
-
+                space = setSpaceUtil(newTaskList.get(i).getLasting());
+            }else {
+                startTime = startTimeUtil(newTaskList.get(i - 1).getEndTime(), space);
+                space = setSpaceUtil(newTaskList.get(i).getLasting());
+            }
             endTime = startTimeUtil(startTime, newTaskList.get(i).getLasting());
             long endTimel = Long.parseLong(endTime.substring(11).replaceAll("[^0-9]",""));
             if(endTimel > 123000){
                 mark = i;
                 markj = i;
-                break;
+                if(mark > 0) break;
             }else{
                 newTaskList.get(i).setStartTime(startTime);
                 newTaskList.get(i).setEndTime(endTime);
             }
         }
-        /*下午的任务从14：00开始*/
-        for( ; mark < size; mark++){
-            if(mark == markj)
-                startTime = firstStartTime.substring(0,11) + "14:00:00";
-            else
-                startTime = startTimeUtil(newTaskList.get(mark - 1).getEndTime(), 10);
-
-            endTime = startTimeUtil(startTime, newTaskList.get(mark).getLasting());
-            newTaskList.get(mark).setStartTime(startTime);
-            newTaskList.get(mark).setEndTime(endTime);
+        /*下午的任务从14：00开始,每个任务之间休息space分钟.*/
+        if(mark > 0) {
+            for (; mark < size; mark++) {
+                if (mark == markj) {
+                    startTime = firstStartTime.substring(0, 11) + "14:00:00";
+                    space = setSpaceUtil(newTaskList.get(mark).getLasting());
+                }else {
+                    startTime = startTimeUtil(newTaskList.get(mark - 1).getEndTime(), space);
+                    space = setSpaceUtil(newTaskList.get(mark).getLasting());
+                }
+                endTime = startTimeUtil(startTime, newTaskList.get(mark).getLasting());
+                newTaskList.get(mark).setStartTime(startTime);
+                newTaskList.get(mark).setEndTime(endTime);
+            }
         }
         return newTaskList;
     }

@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface TaskService {
 
-    Task updateTaskStatus(Task task);
+    Task updateTaskStatus(Task task, UserPo userPo);
 
     List<Task> getSortTasks(SortVo sortVo, UserPo userPo);
 

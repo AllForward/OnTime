@@ -7,6 +7,7 @@ import com.sln.ontime.model.po.UserPo;
 import com.sln.ontime.model.vo.SortVo;
 import com.sln.ontime.service.TaskService;
 import com.sln.ontime.service.taskSorting.StartSortService;
+import com.sln.ontime.util.TimeUtil;
 import com.sln.ontime.util.VerifyUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class TaskServiceImpl implements TaskService {
      * @return
      */
     @Override
-    public Task updateTaskStatus(Task task) {
+    public Task updateTaskStatus(Task task, UserPo userPo) {
 
         if (VerifyUtil.isNull(task) || VerifyUtil.isEmpty(task.getTaskId()) || VerifyUtil.isEmpty(task.getStatus())) {
             log.info("前端传过来的部分数据为空");
@@ -42,9 +43,17 @@ public class TaskServiceImpl implements TaskService {
             log.info("前端传过来的数据格式错误");
             throw new ErrorException("请正确填写子任务状态");
         }
-        if (taskMapper.updateTaskStatus(task) != 1) {
-            log.info("更新子任务{}失败", task.getTaskId());
-            throw new ErrorException("系统异常，请稍后重试");
+        //对子任务的权限进行校验
+        Task taskVo = taskMapper.getTaskByTaskId(task.getTaskId());
+        if (!VerifyUtil.isNull(taskVo)) {
+            if (!taskVo.getUserId().equals(userPo.getUserId())) {
+                log.info("该子计划不属于用户{}", taskVo.getUserId());
+                throw new ErrorException("您无权限修改该子计划");
+            }
+            if (taskMapper.updateTaskStatus(task) != 1) {
+                log.info("更新子任务{}失败", task.getTaskId());
+                throw new ErrorException("系统异常，请稍后重试");
+            }
         }
         return task;
     }
@@ -55,6 +64,13 @@ public class TaskServiceImpl implements TaskService {
             log.info("前端传过来的部分数据为空");
             throw new ErrorException("请选择要获取的子任务时间");
         }
+        //对日期格式进行校验
+        if (!sortVo.getDate().matches("^((?:19|20)\\d\\d)-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$")) {
+            log.info("日期格式错误");
+            throw new ErrorException("日期错误");
+        }
+        sortVo.setStartDate(sortVo.getDate() + " 00:00:00");
+        sortVo.setEndDate(TimeUtil.nextDay(sortVo.getStartDate()));
         sortVo.setUserId(userPo.getUserId());
         List<Task> taskList = taskMapper.getTasksByUserIdAndTime(sortVo);
         if (VerifyUtil.isEmpty(taskList)) {

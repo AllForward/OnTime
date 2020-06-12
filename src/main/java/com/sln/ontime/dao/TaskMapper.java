@@ -3,7 +3,6 @@ package com.sln.ontime.dao;
 import com.sln.ontime.model.po.Task;
 import com.sln.ontime.model.vo.SortVo;
 import org.apache.ibatis.annotations.*;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ public interface TaskMapper {
     Integer deleteTaskByTaskId(Integer taskId);
 
     @Options(useGeneratedKeys = true,keyProperty = "taskId", keyColumn = "task_id")
-    @Insert("insert into task(plan_id,user_id,task_name,lasting,start_time,end_time,priority,status)" +
+    @Insert("insert into task(plan_id,user_id,task_name,lasting,start_time,end_time,priority,status) " +
             "values (#{planId},#{userId},#{taskName},#{lasting},#{startTime},#{endTime},#{priority},#{status})")
     Integer insertTask(Task task);
 
@@ -32,8 +31,9 @@ public interface TaskMapper {
     @Select("select task_id,plan_id,user_id,task_name,lasting,start_time,end_time,priority,status from task where plan_id = #{planId}")
     List<Task> getTaskByPlanId(Integer planId);
 
-    @Select("select task_id, task_name, lasting, start_time, end_time, priority, status from task where user_id = #{userId}," +
-            "status = 0 and (start_time >= #{date} or end_time <= #{date})")
+    @Select("select task_id, task_name, lasting, start_time, end_time, priority, status from task where user_id = #{userId} and " +
+            "`status` = 0 and ((start_time >= #{startDate} and start_time <= #{endDate}) or (start_time <= #{endDate} and " +
+            "end_time >= #{startDate}))")
     List<Task> getTasksByUserIdAndTime(SortVo sortVo);
 
     @Select("select user_id from task where task_id = #{taskId}")

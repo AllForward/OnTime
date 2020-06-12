@@ -39,7 +39,9 @@ public class ScheduleController {
     @PostMapping("/updateTaskStatus")
     public ResultBean<?> updateTaskStatus(@RequestBody Task task) {
         log.info("执行修改子任务状态方法");
-        return new ResultBean<>(taskService.updateTaskStatus(task));
+        Subject subject = SecurityUtils.getSubject();
+        UserPo userPo = (UserPo) subject.getPrincipal();
+        return new ResultBean<>(taskService.updateTaskStatus(task, userPo));
     }
 
 

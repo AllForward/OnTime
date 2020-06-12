@@ -11,6 +11,7 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -41,14 +42,13 @@ public class PersonalPlanController {
 
     /**
      * 插入个人计划信息
-     * @param planContent 个人计划信息的json
      * @return 插入的信息
      */
     @PostMapping("set")
-    public ResultBean<?> insertPersonalPlan(@RequestBody String planContent){
+    public ResultBean<?> insertPersonalPlan(@Valid @RequestBody PlanVo planVo){
         log.info("开始插入个人计划信息");
-        System.out.println(planContent);
-        PlanVo planVo = JSONObject.parseObject(planContent, PlanVo.class);
+//        System.out.println(planContent);
+//        PlanVo planVo = JSONObject.parseObject(planContent, PlanVo.class);
         Subject subject = SecurityUtils.getSubject();
         UserPo userPo = (UserPo) subject.getPrincipal();
         planVo.setUserId(userPo.getUserId());
@@ -59,13 +59,12 @@ public class PersonalPlanController {
 
     /**
      * 修改个人计划的内容
-     * @param planContent 修改的内容
      * @return 修改的结果
      */
     @PostMapping("update")
-    public ResultBean<?> updatePersonalPlan(@RequestBody String planContent){
+    public ResultBean<?> updatePersonalPlan(@Valid @RequestBody PlanVo planVo){
         log.info("开始修改个人计划信息");
-        PlanVo planVo = JSONObject.parseObject(planContent, PlanVo.class);
+        //PlanVo planVo = JSONObject.parseObject(planContent, PlanVo.class);
         Subject subject = SecurityUtils.getSubject();
         UserPo userPo = (UserPo) subject.getPrincipal();
         planVo.setUserId(userPo.getUserId());

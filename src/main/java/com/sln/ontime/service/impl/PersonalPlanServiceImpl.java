@@ -7,6 +7,7 @@ import com.sln.ontime.model.po.Plan;
 import com.sln.ontime.model.po.Task;
 import com.sln.ontime.model.vo.PlanVo;
 import com.sln.ontime.service.PersonalPlanService;
+import com.sln.ontime.util.TimeUtil;
 import com.sln.ontime.util.VerifyUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
@@ -77,7 +78,7 @@ public class PersonalPlanServiceImpl implements PersonalPlanService {
      * @param personalPlanVo 个人计划内容
      * @return 插入的内容
      */
-    @Transactional
+    @Transactional(rollbackFor = ErrorException.class)
     @Override
     public PlanVo insertPersonalPlan(PlanVo personalPlanVo) {
         System.out.println(personalPlanVo);
@@ -93,6 +94,10 @@ public class PersonalPlanServiceImpl implements PersonalPlanService {
         for (Task task : taskList){
             task.setPlanId(plan.getPlanId());
             task.setUserId(personalPlanVo.getUserId());
+            //判断日期格式以及开始时间与结束时间的先后顺序是否满足要求
+            if (!TimeUtil.isLegal(task)) {
+                throw new ErrorException("日期格式错误");
+            }
             if(taskMapper.insertTask(task)!=1){
                 log.info("子任务插入数据库失败");
                 throw new ErrorException("系统出现异常，请稍后重试");
@@ -110,7 +115,7 @@ public class PersonalPlanServiceImpl implements PersonalPlanService {
      * @param personalPlanVo 个人计划的内容
      * @return 修改后的内容
      */
-    @Transactional
+    @Transactional(rollbackFor = ErrorException.class)
     @Override
     public PlanVo updatePersonalPlan(PlanVo personalPlanVo) {
         if(planMapper.updatePlanByPlanId(personalPlanVo.getPlanName(),personalPlanVo.getPlanId()) != 1){
@@ -118,6 +123,11 @@ public class PersonalPlanServiceImpl implements PersonalPlanService {
             throw new ErrorException("系统出现异常，请稍后重试");
         }
         for (Task task:personalPlanVo.getTaskList()){
+            task.setPlanId(personalPlanVo.getPlanId());
+            //判断日期格式以及开始时间与结束时间的先后顺序是否满足要求
+            if (!TimeUtil.isLegal(task)) {
+                throw new ErrorException("日期格式错误");
+            }
             if(VerifyUtil.isEmpty(task.getTaskId())){
                 task.setUserId(personalPlanVo.getUserId());
                 task.setPlanId(personalPlanVo.getPlanId());

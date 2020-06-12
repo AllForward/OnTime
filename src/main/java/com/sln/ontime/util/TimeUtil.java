@@ -1,5 +1,8 @@
 package com.sln.ontime.util;
 
+import com.sln.ontime.exception.ErrorException;
+import com.sln.ontime.model.po.Task;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.map.HashedMap;
 
@@ -156,6 +159,10 @@ public class TimeUtil {
             return null;
         }
         Date expire = stringToDate(expireTime);
+        if (null == expire) {
+            log.info("转换下一天日期失败");
+            throw new ErrorException("系统错误，请稍后重试");
+        }
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(expire);
         calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 1);
@@ -190,6 +197,27 @@ public class TimeUtil {
             return time;
         }
         return time;
+    }
+
+    /**
+     * 日期格式是否合法
+     * @return
+     */
+    public static Boolean isLegal(Task task) {
+        //判断日期格式是否正确
+        Date startTime = stringToDate(task.getStartTime());
+        Date endTime = stringToDate(task.getEndTime());
+        if (null == startTime || null == endTime) {
+            log.info("日期格式不符合规范");
+            return false;
+        }
+        //比较开始时间与结束时间
+        if (after(startTime, endTime)) {
+            //说明开始时间在截至时间之后
+            log.info("开始时间在截至时间之后, 格式不合法");
+            return false;
+        }
+        return true;
     }
 
     public static String getTimeByType(String type) {
@@ -253,5 +281,8 @@ public class TimeUtil {
         return (calendarEnd.getTimeInMillis() - calendarStart.getTimeInMillis())/(1000*24*3600);
     }
 
+    public static void main(String[] args) {
+        System.out.println(TimeUtil.nextDay("2020-06-04 00:00:00"));
+    }
 
 }
